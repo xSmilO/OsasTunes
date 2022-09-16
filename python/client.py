@@ -41,6 +41,7 @@ def reset():
 def add_song(song):
     if player.add_song(song):
         sio.emit("song_added")
+        player.set_playlist_info("Your creation", "YOU")
 
 
 @sio.on("play_python")
@@ -68,19 +69,15 @@ def skip_song(volume):
 @sio.on("set_playlist_info_python")
 def set_playlist(info):
     # print(playlist)]
-    player.set_playlist_info(info['title'], info['author'])
+    player.set_playlist_info(info['title'], info['author'], info['color'])
 
 
 @sio.on("set_playlist_songs_python")
 def set_playlist_songs(songs):
-    player.set_songList_from_playlist(songs)
+    if player.set_songList_from_playlist(songs):
+        sio.emit("playlist_added_to_queue")
 
 
 @sio.on("get_player_info_python")
 def get_player_info():
-    sio.emit("sending_player_info", player.get_player_info())
-
-
-while looped:
-    time.sleep(5)
     sio.emit("sending_player_info", player.get_player_info())

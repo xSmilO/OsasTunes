@@ -26,7 +26,6 @@ class Save {
     static async getPlaylists() {
         return new Promise((res, rej) => {
             const data = fs.readFileSync(savePlaylistsPath, "utf-8");
-            console.log(JSON.parse(data));
             res(JSON.parse(data));
         });
     }

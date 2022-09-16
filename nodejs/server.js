@@ -29,9 +29,18 @@ io.on("connection", (socket) => {
         });
     });
 
+    socket.on("update_page", () => {
+        socket.broadcast.emit("get_player_info_python");
+    });
+
     socket.on("add_song", (song) => {
         socket.broadcast.emit("add_song_python", song);
         socket.broadcast.emit("get_player_info_python");
+        socket.broadcast.emit("set_playlist_info_python", {
+            title: "Your creation",
+            author: "YOU",
+            color: "#9adcff",
+        });
         // console.log("kurwa 1");
     });
 
@@ -76,11 +85,11 @@ io.on("connection", (socket) => {
 
     socket.on("save_playlist", (playlist) => {
         Save.savePlaylist(playlist);
+        socket.emit("playlist_saved");
     });
 
     socket.on("get_saved_playlists", () => {
         Save.getPlaylists().then((playlists) => {
-            console.log(Object.keys(playlists));
             socket.emit("get_saved_playlists", playlists);
         });
     });
@@ -89,11 +98,16 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("set_playlist_info_python", {
             title: info.title,
             author: info.author,
+            color: info.color,
         });
     });
 
     socket.on("set_playlist_songs", (songs) => {
         socket.broadcast.emit("set_playlist_songs_python", songs);
+    });
+
+    socket.on("playlist_added_to_queue", () => {
+        socket.broadcast.emit("playlist_added_to_queue");
     });
 
     socket.on("connect_error", () => {

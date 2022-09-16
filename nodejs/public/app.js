@@ -1,14 +1,12 @@
 const socket = io();
 
 const stopSocketBtn = document.querySelector(".stop_socket");
-
 stopSocketBtn.addEventListener("click", (e) => {
     socket.emit("stop_socket");
 });
 
 const searchForm = document.querySelector(".search-section .search");
 const searchInput = document.querySelector(".search-section .search input");
-
 const searchPlaylistForm = document.querySelector(
     ".playlist-search-section .search"
 );
@@ -16,35 +14,21 @@ const searchPlaylistInput = document.querySelector(
     ".playlist-search-section .search input"
 );
 
-const playlistSearchResult = document.querySelector(
-    ".playlist-search-section .search-result"
-);
-const playlistTemplate = document.querySelector(".playlist.template");
-const playlistVideoTemplate = document.querySelector(".video.template");
-
 let currentPlaylist = {};
-
-const playlistsSection = document.querySelector(".playlists-section");
-
-const searchResult = document.querySelector(".search-result");
-const videoResultTemplate = document.querySelector(
-    ".search-result .video.template"
-);
-
-const songAddedNotification = document.querySelector(
-    ".search-section .song-added"
-);
-
 const playlistColors = ["#7189BF", "#DF7599", "#FFC785", "#72D6C9"];
 
 // player controllers
-
-const playBtn = document.querySelector(
+let playBtn = document.querySelector(
     ".player-controller .main-controllers .play"
 );
 
 const skipBtn = document.querySelector(
     ".player-controller .main-controllers .skip"
+);
+
+const volumeBtn = document.querySelector(".player-controller .options .volume");
+const volumeSlider = document.querySelector(
+    ".player-controller .options .volume .volume-slider"
 );
 
 let result = [];
@@ -71,6 +55,14 @@ try {
     skipBtn.addEventListener("click", () => {
         socket.emit("skip");
     });
+
+    volumeBtn.addEventListener("click", () => {
+        volumeBtn.classList.toggle("active");
+    });
+
+    volumeSlider.addEventListener("input", () => {
+        socket.emit("change_volume", parseInt(volumeSlider.value));
+    });
 } catch (e) {}
 
 try {
@@ -88,217 +80,23 @@ function addVideoToQueue(event) {
     socket.emit("add_song", result[videoIndex]);
 }
 
-function createSearchResult(videos) {
-    let index = 0;
-    result = videos;
-
-    for (const videoDetails of videos) {
-        const newVideo = videoResultTemplate.cloneNode(true);
-        newVideo.className = "video";
-
-        const title = newVideo.querySelector(".description .title");
-        title.innerText = videoDetails.title;
-
-        const author = newVideo.querySelector(".description .details .author");
-        author.innerText = videoDetails.author.name;
-
-        const duration = newVideo.querySelector(
-            ".description .details .duration"
-        );
-        duration.innerText = videoDetails.timestamp;
-
-        const addVideo = newVideo.querySelector(".buttons .add");
-        addVideo.setAttribute("video-index", index);
-        addVideo.addEventListener("click", (e) => {
-            addVideoToQueue(e);
-        });
-
-        index++;
-        searchResult.appendChild(newVideo);
-    }
-}
-
-function generateListForQueue(songList, currentSong) {
-    try {
-        const playlistSongs = document.querySelector(
-            ".player-section .playlist-songs"
-        );
-        playlistSongs.replaceChildren();
-
-        const playlistSongTemplate = document.querySelector(" .song.template");
-
-        for (const songDetails of songList) {
-            const song = playlistSongTemplate.cloneNode(true);
-            song.className = "song";
-
-            if (currentSong && songDetails.videoId == currentSong?.videoId)
-                song.classList.add("current");
-
-            const title = song.querySelector(".description .title p");
-            title.innerText = songDetails.title;
-
-            const author = song.querySelector(".details .author");
-            author.innerText = songDetails.author.name;
-
-            const duration = song.querySelector(".details .duration");
-            duration.innerText = songDetails.timestamp;
-
-            playlistSongs.appendChild(song);
-        }
-    } catch (e) {
-        return;
-    }
-}
-
-function updateCurrentSong(song) {
-    try {
-        const currentSong = document.querySelector(
-            ".player-controller .currentSong"
-        );
-
-        const title = currentSong.querySelector(".title");
-        const author = currentSong.querySelector(".author");
-        if (!song) {
-            title.innerText = "...";
-            author.innerText = "...";
-            return;
-        }
-
-        title.innerText = song.title;
-        author.innerText = song.author.name;
-    } catch (e) {
-        return;
-    }
-}
-
 function updatePage(info) {
     console.log(info);
 
     try {
-        const playBtn = document.querySelector(
+        if (!playBtn) return;
+
+        playBtn = document.querySelector(
             ".player-controller .main-controllers .play"
         );
         paused = info.paused;
 
-        console.log(paused);
-
         if (paused) {
             playBtn.className = "fa-solid fa-play play";
         } else playBtn.className = "fa-solid fa-pause play";
-    } catch (e) {}
-}
-
-function generatePlaylistResult(playlist) {
-    playlistSearchResult.replaceChildren();
-
-    const resultPlaylist = playlistTemplate.cloneNode(true);
-    resultPlaylist.classList.remove("template");
-
-    const playlistTitle = resultPlaylist.querySelector(".details .title");
-    playlistTitle.innerText = playlist.title;
-    const playlistAuthor = resultPlaylist.querySelector(".details .author");
-    playlistAuthor.innerText = playlist.author.name;
-
-    playlistSearchResult.appendChild(resultPlaylist);
-    const playlistVideoContainer = document.querySelector(
-        ".playlist-search-section .search-result .playlist .songs"
-    );
-
-    playlist.color =
-        playlistColors[Math.floor(Math.random() * playlistColors.length)];
-
-    const logo = resultPlaylist.querySelector(".playlist-logo");
-    logo.style.backgroundColor = playlist.color;
-
-    for (const videoDetails of playlist.videos) {
-        const newVideo = playlistVideoTemplate.cloneNode(true);
-        newVideo.classList.remove("template");
-        videoDetails.timestamp = videoDetails.duration.timestamp;
-        videoDetails.url =
-            "https://www.youtube.com/watch?v=" + videoDetails.videoId;
-
-        const title = newVideo.querySelector(".description .title");
-        title.innerText = videoDetails.title;
-
-        const author = newVideo.querySelector(".description .details .author");
-        author.innerText = videoDetails.author.name;
-
-        const duration = newVideo.querySelector(
-            ".description .details .duration"
-        );
-        duration.innerText = videoDetails.timestamp;
-
-        playlistVideoContainer.append(newVideo);
+    } catch (e) {
+        console.error(e);
     }
-
-    resultPlaylist.appendChild(playlistVideoContainer);
-
-    const addPlaylistBtn = resultPlaylist.querySelector(".add-playlist");
-
-    addPlaylistBtn.addEventListener("click", () => {
-        socket.emit("save_playlist", playlist);
-    });
-}
-
-function generateSavedPlaylist(playlists) {
-    const playlistTemplate = document.querySelector(".playlist.template");
-
-    let i = 0;
-    savedPlaylists = [];
-
-    for (const key in playlists) {
-        const newPlaylist = playlistTemplate.cloneNode(true);
-        newPlaylist.classList.remove("template");
-        const playlistDetails = playlists[key];
-
-        savedPlaylists.push(playlistDetails);
-
-        newPlaylist.setAttribute("index", i);
-
-        const logo = newPlaylist.querySelector(".logo");
-        logo.style.backgroundColor = playlistDetails.color;
-
-        const title = newPlaylist.querySelector(".details .title");
-        title.innerText = playlistDetails.title;
-
-        const author = newPlaylist.querySelector(".details .author");
-        author.innerText = playlistDetails.author.name;
-
-        playlistsSection.appendChild(newPlaylist);
-
-        const selectedPlaylist = logo.querySelector(".selected-playlist");
-
-        selectedPlaylist.addEventListener("mouseenter", (e) => {
-            newPlaylist.classList.add("selected");
-        });
-
-        selectedPlaylist.addEventListener("mouseout", (e) => {
-            newPlaylist.classList.remove("selected");
-        });
-
-        selectedPlaylist.addEventListener("click", (e) => {
-            const selectedPlaylist =
-                savedPlaylists[parseInt(newPlaylist.getAttribute("index"))];
-
-            socket.emit("set_playlist_info", {
-                title: selectedPlaylist.title,
-                author: selectedPlaylist.author.name,
-            });
-
-            socket.emit("set_playlist_songs", selectedPlaylist.videos);
-        });
-
-        selectedPlaylist.addEventListener("touchstart", (e) => {
-            newPlaylist.classList.add("selected");
-        });
-
-        selectedPlaylist.addEventListener("touchend", (e) => {
-            newPlaylist.classList.remove("selected");
-        });
-
-        i++;
-    }
-    console.log(playlists);
 }
 
 socket.on("search_result", (data) => {
@@ -306,45 +104,58 @@ socket.on("search_result", (data) => {
     currentPlaylist = {};
     if (searchForm) {
         createSearchResult(data);
+        Generate.searchResult(result, data);
     }
 });
 
 socket.on("search_playlist_result", (data) => {
     currentPlaylist = data;
-    generatePlaylistResult(currentPlaylist);
+    Generate.playlistResult(currentPlaylist);
 });
 
 socket.on("update_page", (info) => {
     // console.log(info);
-    updatePage(info);
-    generateListForQueue(info.songHistory, info.currentSong);
-    updateCurrentSong(info.currentSong);
+    console.log(`przed: ${paused}`);
+
+    if (playBtn)
+        Generate.updatePage(info, playBtn, paused).then(
+            (newState) => (paused = newState)
+        );
+
+    console.log(`po: ${paused}`);
+
+    Generate.listForQueue(
+        info.songHistory,
+        info.currentSong,
+        info.playlistName,
+        info.playlistAuthor,
+        info.color
+    );
+
+    Generate.updateCurrentSong(info.currentSong);
+    if (volumeSlider) volumeSlider.value = info.volume;
 });
 
-function songAddedNotificationShow() {
-    songAddedNotification.removeEventListener(
-        "transitionend",
-        songAddedNotification
-    );
-    setTimeout(() => {
-        songAddedNotification.classList.remove("show");
-    }, 500);
-}
-
 socket.on("song_added", () => {
-    songAddedNotification.classList.add("show");
-
-    songAddedNotification.addEventListener(
-        "transitionend",
-        songAddedNotificationShow
-    );
+    Animate.songAdded();
 });
 
 if (playlistsSection) {
-    console.log("wyslam");
     socket.emit("get_saved_playlists");
 }
 
 socket.on("get_saved_playlists", (playlists) => {
-    generateSavedPlaylist(playlists);
+    Generate.savedPlaylists(savedPlaylists, playlists);
 });
+
+socket.on("playlist_saved", () => {
+    Animate.playlistSaved();
+});
+
+socket.on("playlist_added_to_queue", () => {
+    Animate.playlistAdded();
+});
+
+setInterval(() => {
+    socket.emit("update_page");
+}, 1000);

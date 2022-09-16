@@ -17,6 +17,7 @@ class Player:
         self.skipped = False
         self.playlistName = ""
         self.playlistAuthor = ""
+        self.color = "#9adcff"
 
     def add_song(self, song):
         print("song added")
@@ -26,6 +27,7 @@ class Player:
 
     def play(self):
         if not self.songList:
+            self.reset_player()
             return
         if self.paused and self.currentSong and self.player.is_playing() == False and self.skipped == False:
             print("kontynuacja")
@@ -94,12 +96,14 @@ class Player:
         info["songHistory"] = self.songHistory
         info["playlistName"] = self.playlistName
         info["playlistAuthor"] = self.playlistAuthor
+        info["color"] = self.color
 
         return info
 
-    def set_playlist_info(self, title, author):
+    def set_playlist_info(self, title, author, color):
         self.playlistName = title
         self.playlistAuthor = author
+        self.color = color
 
     def set_songList_from_playlist(self, songs):
         self.reset_player()
@@ -107,6 +111,8 @@ class Player:
         for song in songs:
             self.songList.append(song)
             self.songHistory.append(song)
+
+        return True
 
     def reset_player(self):
         self.songList = []

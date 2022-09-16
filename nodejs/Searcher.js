@@ -5,7 +5,7 @@ class Searcher {
     static async search(key) {
         const result = await yts(key);
         const videos = result.videos.slice(0, 20);
-
+        console.log("zrobiłem");
         return videos;
     }
 
