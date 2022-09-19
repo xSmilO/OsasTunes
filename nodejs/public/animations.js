@@ -3,7 +3,7 @@ const playlistBtn = document.querySelector(".navigation .playlist");
 const navigationBtn = document.querySelector(".navigation-btn");
 const navigation = document.querySelector(".navigation");
 const playlistSavedNotification = document.querySelector(
-    ".playlist-search-section .playlist-saved"
+    ".main-container .playlist-saved"
 );
 const playlistAddedNotification = document.querySelector(
     ".main-container .playlist-added"
@@ -39,7 +39,7 @@ class Animate {
 
         setTimeout(() => {
             playlistAddedNotification.classList.remove("show");
-        }, 500);
+        }, 800);
     }
 
     static async playlistSavedShow() {

@@ -115,14 +115,10 @@ socket.on("search_playlist_result", (data) => {
 
 socket.on("update_page", (info) => {
     // console.log(info);
-    console.log(`przed: ${paused}`);
-
     if (playBtn)
         Generate.updatePage(info, playBtn, paused).then(
             (newState) => (paused = newState)
         );
-
-    console.log(`po: ${paused}`);
 
     Generate.listForQueue(
         info.songHistory,
