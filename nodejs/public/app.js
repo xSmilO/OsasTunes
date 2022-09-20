@@ -33,6 +33,7 @@ const volumeSlider = document.querySelector(
 
 let result = [];
 let savedPlaylists = [];
+let favoriteSongs = [];
 
 let paused = true;
 
@@ -74,12 +75,6 @@ try {
     });
 } catch (e) {}
 
-function addVideoToQueue(event) {
-    const videoIndex = parseInt(event.target.getAttribute("video-index"));
-    console.log(videoIndex);
-    socket.emit("add_song", result[videoIndex]);
-}
-
 function updatePage(info) {
     console.log(info);
 
@@ -103,14 +98,15 @@ socket.on("search_result", (data) => {
     searchResult.replaceChildren();
     currentPlaylist = {};
     if (searchForm) {
-        createSearchResult(data);
-        Generate.searchResult(result, data);
+        Generate.searchResult(data).then((res) => (result = res));
     }
 });
 
 socket.on("search_playlist_result", (data) => {
     currentPlaylist = data;
-    Generate.playlistResult(currentPlaylist);
+    Generate.playlistResult(currentPlaylist).then((songs) => {
+        result = songs;
+    });
 });
 
 socket.on("update_page", (info) => {
@@ -140,6 +136,8 @@ if (playlistsSection) {
     socket.emit("get_saved_playlists");
 }
 
+socket.emit("get_favorite_songs");
+
 socket.on("get_saved_playlists", (playlists) => {
     Generate.savedPlaylists(savedPlaylists, playlists);
 });
@@ -150,6 +148,16 @@ socket.on("playlist_saved", () => {
 
 socket.on("playlist_added_to_queue", () => {
     Animate.playlistAdded();
+});
+
+socket.on("get_favorite_songs", (songs) => {
+    favoriteSongs = songs;
+
+    if (favoriteSection) {
+        Generate.favoriteSongs(songs).then((songs) => {
+            result = songs;
+        });
+    }
 });
 
 setInterval(() => {

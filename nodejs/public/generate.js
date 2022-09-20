@@ -8,12 +8,46 @@ const searchResult = document.querySelector(".search-result");
 const videoResultTemplate = document.querySelector(
     ".search-result .video.template"
 );
+const favoriteSection = document.querySelector(
+    ".main-container .favorite-section"
+);
+const favoriteSongTemplate = document.querySelector(".favorite-song.template");
+const favoriteSongsSection = document.querySelector(".favorite-section .songs");
+
+if (favoriteSection) {
+    const addPlaylistBtn = favoriteSection.querySelector(".add-playlist");
+    addPlaylistBtn.addEventListener("click", () => {
+        console.log("sieam");
+        socket.emit("set_playlist_songs", result);
+        socket.emit("set_playlist_info", {
+            title: "Your favorite songs",
+            author: "You",
+            color: "#ffc745",
+        });
+    });
+}
+
+function addSongToQueue(elem) {
+    const videoIndex = parseInt(elem.getAttribute("video-index"));
+    // console.log(videoIndex);
+    // console.log(result[videoIndex]);
+    socket.emit("add_song", result[videoIndex]);
+}
+
+function addSongToFavorite(elem) {
+    const videoIndex = parseInt(elem.getAttribute("video-index"));
+    console.log(videoIndex);
+    console.log(result[videoIndex]);
+    socket.emit("save_song", result[videoIndex]);
+}
+
+function removeSongFromFavorite(songId) {
+    socket.emit("remove_favorite_song", songId);
+}
 
 class Generate {
-    static async searchResult(result, videos) {
+    static async searchResult(videos) {
         let index = 0;
-        result = videos;
-
         for (const videoDetails of videos) {
             const newVideo = videoResultTemplate.cloneNode(true);
             newVideo.className = "video";
@@ -32,14 +66,24 @@ class Generate {
             duration.innerText = videoDetails.timestamp;
 
             const addVideo = newVideo.querySelector(".buttons .add");
-            addVideo.setAttribute("video-index", index);
-            addVideo.addEventListener("click", (e) => {
-                addVideoToQueue(e);
+            newVideo.setAttribute("video-index", index);
+            addVideo.addEventListener("click", () => {
+                addSongToQueue(newVideo);
+            });
+
+            const heart = newVideo.querySelector(".buttons .heart");
+            if (favoriteSongs[videoDetails.videoId])
+                heart.classList.add("favorite");
+
+            heart.addEventListener("click", () => {
+                addSongToFavorite(newVideo);
             });
 
             index++;
             searchResult.appendChild(newVideo);
         }
+
+        return videos;
     }
 
     static async playlistResult(playlist) {
@@ -64,9 +108,13 @@ class Generate {
         const logo = resultPlaylist.querySelector(".playlist-logo");
         logo.style.backgroundColor = playlist.color;
 
+        let index = 0;
+
         for (const videoDetails of playlist.videos) {
             const newVideo = playlistVideoTemplate.cloneNode(true);
             newVideo.classList.remove("template");
+            newVideo.setAttribute("video-index", index);
+
             videoDetails.timestamp = videoDetails.duration.timestamp;
             videoDetails.url =
                 "https://www.youtube.com/watch?v=" + videoDetails.videoId;
@@ -84,7 +132,13 @@ class Generate {
             );
             duration.innerText = videoDetails.timestamp;
 
+            const addVideo = newVideo.querySelector(".buttons .add");
+            addVideo.addEventListener("click", () => {
+                addSongToQueue(newVideo);
+            });
+
             playlistVideoContainer.append(newVideo);
+            index++;
         }
 
         resultPlaylist.appendChild(playlistVideoContainer);
@@ -94,6 +148,8 @@ class Generate {
         addPlaylistBtn.addEventListener("click", () => {
             socket.emit("save_playlist", playlist);
         });
+
+        return playlist.videos;
     }
 
     static async savedPlaylists(savedPlaylists, playlists) {
@@ -187,6 +243,7 @@ class Generate {
                 document.querySelector(" .song.template");
 
             for (const songDetails of songList) {
+                if (!songDetails) continue;
                 const song = playlistSongTemplate.cloneNode(true);
                 song.className = "song";
 
@@ -205,7 +262,7 @@ class Generate {
                 playlistSongs.appendChild(song);
             }
         } catch (e) {
-            console.error(e);
+            // console.error(e);
             return;
         }
     }
@@ -229,6 +286,51 @@ class Generate {
         } catch (e) {
             return;
         }
+    }
+
+    static async favoriteSongs(songs) {
+        favoriteSongsSection.replaceChildren();
+        let index = 0;
+
+        const songsArr = [];
+
+        for (const songId in songs) {
+            const newVideo = favoriteSongTemplate.cloneNode(true);
+            newVideo.classList.remove("template");
+            const songDetails = songs[songId];
+            songsArr.push(songDetails);
+
+            const title = newVideo.querySelector(".description .title");
+            title.innerText = songDetails.title;
+
+            const author = newVideo.querySelector(
+                ".description .details .author"
+            );
+            author.innerText = songDetails.author.name;
+
+            const duration = newVideo.querySelector(
+                ".description .details .duration"
+            );
+            duration.innerText = songDetails.timestamp;
+
+            const addVideo = newVideo.querySelector(".buttons .add");
+            newVideo.setAttribute("video-index", index);
+            addVideo.addEventListener("click", () => {
+                addSongToQueue(newVideo);
+            });
+
+            const heart = newVideo.querySelector(".buttons .heart");
+            heart.classList.add("favorite");
+            heart.addEventListener("click", () => {
+                removeSongFromFavorite(songDetails.videoId);
+                // addSongToFavorite(newVideo);
+            });
+
+            index++;
+            favoriteSongsSection.appendChild(newVideo);
+        }
+
+        return songsArr;
     }
 
     static async updatePage(info, playBtn, paused) {

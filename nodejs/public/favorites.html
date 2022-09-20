@@ -21,7 +21,7 @@
     </head>
     <body>
         <button class="stop_socket">stop socket</button>
-        <div class="video template">
+        <div class="song favorite-song template">
             <div class="description">
                 <h2 class="title"></h2>
                 <div class="details">
@@ -56,19 +56,6 @@
                     </svg>
                 </div>
             </div>
-        </div>
-        <div class="playlist template">
-            <i class="fa-solid fa-compact-disc playlist-logo"></i>
-            <div class="details">
-                <div class="title">Najlepsza składanka tego lata</div>
-                <div class="author">Dj drzewo</div>
-            </div>
-
-            <div class="add-playlist">
-                <h2>Add playlist</h2>
-            </div>
-
-            <div class="songs"></div>
         </div>
         <main class="main-container">
             <i class="fa-solid fa-chevron-left navigation-btn"></i>
@@ -127,19 +114,21 @@
                 </div>
             </nav>
 
-            <div class="playlist-saved">playlist saved</div>
-            <section class="playlist-search-section">
+            <div class="playlist-added">playlist saved</div>
+            <section class="favorite-section">
                 <div class="song-added">
                     <p>song added</p>
                 </div>
-                <form class="search">
-                    <input type="text" name="" id="" placeholder="listID:" />
-                    <button type="submit">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                </form>
+                <i class="fa-solid fa-compact-disc logo"></i>
+                <div class="details">
+                    <div class="title">Your favorite songs</div>
+                </div>
 
-                <div class="search-result"></div>
+                <div class="add-playlist">
+                    <h2>Play all</h2>
+                </div>
+
+                <div class="songs"></div>
             </section>
         </main>
 

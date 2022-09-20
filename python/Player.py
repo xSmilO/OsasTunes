@@ -100,7 +100,7 @@ class Player:
 
         return info
 
-    def set_playlist_info(self, title, author, color):
+    def set_playlist_info(self, title, author, color="#fd7014"):
         self.playlistName = title
         self.playlistAuthor = author
         self.color = color

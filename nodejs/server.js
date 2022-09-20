@@ -94,6 +94,22 @@ io.on("connection", (socket) => {
         });
     });
 
+    socket.on("get_favorite_songs", () => {
+        Save.getFavoriteSongs().then((songs) => {
+            socket.emit("get_favorite_songs", songs);
+        });
+    });
+
+    socket.on("remove_favorite_song", (songId) => {
+        Save.removeFavoriteSong(songId).then(() => {
+            console.log("skonczylem");
+            Save.getFavoriteSongs().then((songs) => {
+                console.log("wysylam");
+                socket.emit("get_favorite_songs", songs);
+            });
+        });
+    });
+
     socket.on("set_playlist_info", (info) => {
         socket.broadcast.emit("set_playlist_info_python", {
             title: info.title,
@@ -108,6 +124,11 @@ io.on("connection", (socket) => {
 
     socket.on("playlist_added_to_queue", () => {
         socket.broadcast.emit("playlist_added_to_queue");
+    });
+
+    socket.on("save_song", (song) => {
+        Save.saveFavoriteSong(song);
+        console.log("zapisane");
     });
 
     socket.on("connect_error", () => {

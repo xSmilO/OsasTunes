@@ -8,9 +8,7 @@ const playlistSavedNotification = document.querySelector(
 const playlistAddedNotification = document.querySelector(
     ".main-container .playlist-added"
 );
-const songAddedNotification = document.querySelector(
-    ".search-section .song-added"
-);
+const songAddedNotification = document.querySelector(".song-added");
 
 playlistBtn.addEventListener("click", () => {
     playlistBtn.classList.toggle("active");

@@ -1,6 +1,7 @@
 const fs = require("fs");
 
 const savePlaylistsPath = "./saved_playlists.json";
+const favoriteSongsPath = "./favorite_songs.json";
 
 //PLukDUAiQ_itZecSBneSADOsjgf4BPGA8Y
 class Save {
@@ -16,9 +17,24 @@ class Save {
             const JsonStringify = JSON.stringify(savePlaylistJSON);
 
             fs.writeFile(savePlaylistsPath, JsonStringify, (err) => {
-                if (err) {
-                    console.error(err);
-                }
+                if (err) console.error(err);
+            });
+        });
+    }
+
+    static async saveFavoriteSong(song) {
+        fs.readFile(favoriteSongsPath, "utf-8", (err, jsonString) => {
+            if (err) return console.error(err);
+
+            const saveSongJSON = JSON.parse(jsonString);
+            const songId = song.videoId;
+
+            saveSongJSON[songId] = song;
+
+            const JsonStringify = JSON.stringify(saveSongJSON);
+
+            fs.writeFile(favoriteSongsPath, JsonStringify, (err) => {
+                if (err) return console.error(err);
             });
         });
     }
@@ -27,6 +43,31 @@ class Save {
         return new Promise((res, rej) => {
             const data = fs.readFileSync(savePlaylistsPath, "utf-8");
             res(JSON.parse(data));
+        });
+    }
+
+    static async getFavoriteSongs() {
+        return new Promise((res, rej) => {
+            const data = fs.readFileSync(favoriteSongsPath, "utf-8");
+            res(JSON.parse(data));
+        });
+    }
+
+    static async removeFavoriteSong(songId) {
+        return new Promise((res, rej) => {
+            fs.readFile(favoriteSongsPath, "utf-8", (err, jsonString) => {
+                if (err) return console.error(err);
+
+                const saveSongJSON = JSON.parse(jsonString);
+
+                // saveSongJSON[songId] = song;
+                delete saveSongJSON[songId];
+
+                const JsonStringify = JSON.stringify(saveSongJSON);
+                fs.writeFileSync(favoriteSongsPath, JsonStringify);
+
+                res();
+            });
         });
     }
 }
