@@ -57,7 +57,6 @@ def pause_song():
 @sio.on("skip_python")
 def skip_song():
     player.skip()
-    time.sleep(1)
     sio.emit("sending_player_info", player.get_player_info())
 
 
@@ -81,3 +80,23 @@ def set_playlist_songs(songs):
 @sio.on("get_player_info_python")
 def get_player_info():
     sio.emit("sending_player_info", player.get_player_info())
+
+
+@sio.on("previous_song_python")
+def previous_song():
+    player.previous_song()
+
+
+@sio.on("change_looped_python")
+def change_looped():
+    player.change_looped()
+
+
+@sio.on("change_shuffle_python")
+def change_shuffle():
+    player.change_shuffle()
+
+
+@sio.on("get_player_timeline_python")
+def get_player_timeline():
+    sio.emit("sending_player_timeline", player.get_player_timeline())

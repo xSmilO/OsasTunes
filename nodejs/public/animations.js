@@ -84,7 +84,6 @@ class Animate {
     }
 
     static async songAdded() {
-        console.log("kurwa");
         if (!songAddedNotification) return;
         songAddedNotification.classList.add("show");
 

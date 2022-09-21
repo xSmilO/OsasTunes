@@ -14,10 +14,13 @@ const favoriteSection = document.querySelector(
 const favoriteSongTemplate = document.querySelector(".favorite-song.template");
 const favoriteSongsSection = document.querySelector(".favorite-section .songs");
 
+const timeline = document.querySelector(
+    ".player .player-timeline .progress-bar"
+);
+
 if (favoriteSection) {
     const addPlaylistBtn = favoriteSection.querySelector(".add-playlist");
     addPlaylistBtn.addEventListener("click", () => {
-        console.log("sieam");
         socket.emit("set_playlist_songs", result);
         socket.emit("set_playlist_info", {
             title: "Your favorite songs",
@@ -36,8 +39,6 @@ function addSongToQueue(elem) {
 
 function addSongToFavorite(elem) {
     const videoIndex = parseInt(elem.getAttribute("video-index"));
-    console.log(videoIndex);
-    console.log(result[videoIndex]);
     socket.emit("save_song", result[videoIndex]);
 }
 
@@ -341,14 +342,22 @@ class Generate {
                 ".player-controller .main-controllers .play"
             );
             paused = info.paused;
-
             if (paused) {
                 playBtn.className = "fa-solid fa-play play";
             } else playBtn.className = "fa-solid fa-pause play";
 
+            if (info.looped) loopBtn.classList.add("active");
+            else loopBtn.classList.remove("active");
+
+            if (info.shuffle) shuffleBtn.classList.add("active");
+            else shuffleBtn.classList.remove("active");
             return paused;
         } catch (e) {
             console.error(e);
         }
+    }
+
+    static async updateTimeline(currentTime) {
+        timeline.style.transform = `translateX(-${100 - currentTime * 100}%)`;
     }
 }

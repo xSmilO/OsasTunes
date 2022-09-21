@@ -25,10 +25,23 @@ let playBtn = document.querySelector(
 const skipBtn = document.querySelector(
     ".player-controller .main-controllers .skip"
 );
+const previousSongBtn = document.querySelector(
+    ".player-controller .main-controllers .back"
+);
 
 const volumeBtn = document.querySelector(".player-controller .options .volume");
 const volumeSlider = document.querySelector(
     ".player-controller .options .volume .volume-slider"
+);
+
+const moreOptionsBtn = document.querySelector(
+    ".player-controller .options .more-options"
+);
+const loopBtn = document.querySelector(
+    ".player-controller .options .more-options .container .loop"
+);
+const shuffleBtn = document.querySelector(
+    ".player-controller .options .more-options .container .shuffle"
 );
 
 let result = [];
@@ -59,10 +72,30 @@ try {
 
     volumeBtn.addEventListener("click", () => {
         volumeBtn.classList.toggle("active");
+        moreOptionsBtn.classList.remove("show");
     });
 
     volumeSlider.addEventListener("input", () => {
         socket.emit("change_volume", parseInt(volumeSlider.value));
+    });
+
+    previousSongBtn.addEventListener("click", () => {
+        socket.emit("previous_song");
+    });
+
+    moreOptionsBtn.addEventListener("click", () => {
+        volumeBtn.classList.remove("active");
+        moreOptionsBtn.classList.toggle("show");
+    });
+
+    loopBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        socket.emit("change_looped");
+    });
+
+    shuffleBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        socket.emit("change_shuffle");
     });
 } catch (e) {}
 
@@ -74,25 +107,6 @@ try {
         searchPlaylistInput.value = "";
     });
 } catch (e) {}
-
-function updatePage(info) {
-    console.log(info);
-
-    try {
-        if (!playBtn) return;
-
-        playBtn = document.querySelector(
-            ".player-controller .main-controllers .play"
-        );
-        paused = info.paused;
-
-        if (paused) {
-            playBtn.className = "fa-solid fa-play play";
-        } else playBtn.className = "fa-solid fa-pause play";
-    } catch (e) {
-        console.error(e);
-    }
-}
 
 socket.on("search_result", (data) => {
     searchResult.replaceChildren();
@@ -117,7 +131,7 @@ socket.on("update_page", (info) => {
         );
 
     Generate.listForQueue(
-        info.songHistory,
+        info.songList,
         info.currentSong,
         info.playlistName,
         info.playlistAuthor,
@@ -160,6 +174,14 @@ socket.on("get_favorite_songs", (songs) => {
     }
 });
 
+socket.on("sending_player_timeline", (currentTime) => {
+    Generate.updateTimeline(currentTime);
+});
+
 setInterval(() => {
     socket.emit("update_page");
 }, 1000);
+
+setInterval(() => {
+    socket.emit("get_player_timeline");
+}, 500);

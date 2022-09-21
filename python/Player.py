@@ -1,32 +1,36 @@
 import pafy
 import vlc
 import time
+from random import randint
 
 
 class Player:
     def __init__(self):
-        self.Instance = vlc.Instance("--no-video prefer-insecure")
+        self.Instance = vlc.Instance(["--no-video", "prefer-insecure"])
         self.player = self.Instance.media_player_new()
         self.songList = []
-        self.songHistory = []
+        # self.songHistory = []
         self.Media = None
         self.paused = True
-        self.lastLong = None
         self.currentSong = None
-        self.volume = 50
+        self.volume = 30
         self.skipped = False
         self.playlistName = ""
         self.playlistAuthor = ""
         self.color = "#9adcff"
+        self.wait_time = 0
+        self.song_index = 0
+        self.looped = False
+        self.shuffle = False
 
     def add_song(self, song):
         print("song added")
         self.songList.append(song)
-        self.songHistory.append(song)
+        # self.songHistory.append(song)
         return True
 
     def play(self):
-        if not self.songList:
+        if self.song_index >= len(self.songList):
             self.reset_player()
             return
         if self.paused and self.currentSong and self.player.is_playing() == False and self.skipped == False:
@@ -34,9 +38,10 @@ class Player:
             self.player.play()
             self.paused = False
         else:
+            self.wait_time = 0
             print("pierwszy raz")
             self.paused = False
-            self.currentSong = self.songList[0]
+            self.currentSong = self.songList[self.song_index]
             video = pafy.new(self.currentSong['url'])
             best = video.getbest()
             playurl = best.url
@@ -47,12 +52,11 @@ class Player:
             self.player.audio_set_delay(2000)
             self.player.audio_set_volume(self.volume)
 
-        time.sleep(5)
-        while self.player.is_playing():
+        while self.wait_time < 5 or self.player.is_playing():
+            self.wait_time += 1
             time.sleep(2)
 
         self.skipped = False
-        time.sleep(1)
 
         if self.songList and self.paused == False and self.player.is_playing() == False:
             print("nastepna nuta")
@@ -66,13 +70,25 @@ class Player:
         self.player.stop()
         self.paused = False
         self.skipped = True
-        self.lastLong = self.currentSong
-        self.songList.pop(0)
-        if not self.songList:
+        if self.looped == False:
+            self.song_index += 1
+        if self.shuffle:
+            self.song_index = randint(0, len(self.songList) - 1)
+        if self.song_index >= len(self.songList):
             self.paused = True
             self.currentSong = None
         else:
-            self.currentSong = self.songList[0]
+            self.currentSong = self.songList[self.song_index]
+        self.play()
+
+    def previous_song(self):
+        if self.song_index <= 0:
+            return
+        self.player.stop()
+        self.paused = False
+        self.skipped = True
+        self.song_index -= 1
+        self.currentSong = self.songList[self.song_index]
         self.play()
 
     def set_volume(self, volume):
@@ -90,13 +106,13 @@ class Player:
         info = {}
         info["currentSong"] = self.currentSong
         info["paused"] = self.paused
-        info["lastSong"] = self.lastLong
         info["songList"] = self.songList
         info["volume"] = self.player.audio_get_volume()
-        info["songHistory"] = self.songHistory
         info["playlistName"] = self.playlistName
         info["playlistAuthor"] = self.playlistAuthor
         info["color"] = self.color
+        info["looped"] = self.looped
+        info["shuffle"] = self.shuffle
 
         return info
 
@@ -110,18 +126,32 @@ class Player:
         self.pause()
         for song in songs:
             self.songList.append(song)
-            self.songHistory.append(song)
 
         return True
 
+    def change_looped(self):
+        self.shuffle = False
+        self.looped = ~ self.looped
+
+    def change_shuffle(self):
+        self.looped = False
+        self.shuffle = ~ self.shuffle
+
+    def get_player_timeline(self):
+        # timeline = {}
+        # timeline["current_position"] = self.player.get_time()
+        # timeline["track_length"] = self.player.get_length()
+        return self.player.get_position()
+
     def reset_player(self):
         self.songList = []
-        self.songHistory = []
         self.Media = None
         self.paused = True
-        self.lastLong = None
         self.currentSong = None
         self.volume = 50
         self.skipped = False
         self.playlistName = ""
         self.playlistAuthor = ""
+        self.song_index = 0
+        self.looped = False
+        self.shuffle = False

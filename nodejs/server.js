@@ -41,40 +41,33 @@ io.on("connection", (socket) => {
             author: "YOU",
             color: "#9adcff",
         });
-        // console.log("kurwa 1");
     });
 
     socket.on("play", () => {
         socket.broadcast.emit("play_python");
         socket.broadcast.emit("get_player_info_python");
-        // console.log("kurwa 2");
     });
 
     socket.on("pause", () => {
         socket.broadcast.emit("pause_python");
         socket.broadcast.emit("get_player_info_python");
-        // console.log("kurwa 3");
     });
 
     socket.on("skip", () => {
         console.log("skipuj");
         socket.broadcast.emit("skip_python");
         socket.broadcast.emit("get_player_info_python");
-        // console.log("kurwa 4");
     });
 
     socket.on("change_volume", (volume) => {
         socket.broadcast.emit("change_volume_python", volume);
-        // console.log("kurwa 5");
     });
 
     socket.on("sending_player_info", (info) => {
         socket.broadcast.emit("update_page", info);
-        // console.log("kurwa 6");
     });
     socket.on("song_added", () => {
         socket.broadcast.emit("song_added");
-        // console.log("kurwa 7");
     });
 
     socket.on("search_playlist", (key) => {
@@ -128,11 +121,32 @@ io.on("connection", (socket) => {
 
     socket.on("save_song", (song) => {
         Save.saveFavoriteSong(song);
-        console.log("zapisane");
+    });
+
+    socket.on("previous_song", () => {
+        socket.broadcast.emit("previous_song_python");
+        socket.broadcast.emit("get_player_info_python");
+    });
+
+    socket.on("change_looped", () => {
+        socket.broadcast.emit("change_looped_python");
+        socket.broadcast.emit("get_player_info_python");
+    });
+
+    socket.on("change_shuffle", () => {
+        socket.broadcast.emit("change_shuffle_python");
+        socket.broadcast.emit("get_player_info_python");
+    });
+
+    socket.on("get_player_timeline", () => {
+        socket.broadcast.emit("get_player_timeline_python");
+    });
+
+    socket.on("sending_player_timeline", (info) => {
+        socket.broadcast.emit("sending_player_timeline", info);
     });
 
     socket.on("connect_error", () => {
-        // console.log("kurwa 8");
         setTimeout(() => {
             socket.connect();
         }, 1000);
