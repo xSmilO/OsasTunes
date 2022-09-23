@@ -9,6 +9,32 @@ const playlistAddedNotification = document.querySelector(
     ".main-container .playlist-added"
 );
 const songAddedNotification = document.querySelector(".song-added");
+const playerLogo = document.querySelector(".player-section .playlist .logo");
+const playerRemoveBtn = document.querySelector(
+    ".player-section .playlist .logo .reset-player"
+);
+
+try {
+    playerLogo.addEventListener("mouseenter", (e) => {
+        playerRemoveBtn.classList.add("show");
+    });
+
+    playerLogo.addEventListener("mouseout", (e) => {
+        playerRemoveBtn.classList.remove("show");
+    });
+
+    playerLogo.addEventListener("click", (e) => {
+        socket.emit("reset_player");
+    });
+
+    playerLogo.addEventListener("touchstart", (e) => {
+        playerRemoveBtn.classList.add("show");
+    });
+
+    playerLogo.addEventListener("touchend", (e) => {
+        playerRemoveBtn.classList.remove("show");
+    });
+} catch (e) {}
 
 playlistBtn.addEventListener("click", () => {
     playlistBtn.classList.toggle("active");

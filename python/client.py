@@ -100,3 +100,9 @@ def change_shuffle():
 @sio.on("get_player_timeline_python")
 def get_player_timeline():
     sio.emit("sending_player_timeline", player.get_player_timeline())
+
+
+@sio.on("reset_player_python")
+def reset_player():
+    player.pause()
+    player.reset_player()

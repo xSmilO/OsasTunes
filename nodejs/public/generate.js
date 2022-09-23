@@ -358,6 +358,9 @@ class Generate {
     }
 
     static async updateTimeline(currentTime) {
-        timeline.style.transform = `translateX(-${100 - currentTime * 100}%)`;
+        if (timeline)
+            timeline.style.transform = `translateX(-${
+                100 - currentTime * 100
+            }%)`;
     }
 }

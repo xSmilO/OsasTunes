@@ -146,6 +146,10 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("sending_player_timeline", info);
     });
 
+    socket.on("reset_player", () => {
+        socket.broadcast.emit("reset_player_python");
+    });
+
     socket.on("connect_error", () => {
         setTimeout(() => {
             socket.connect();

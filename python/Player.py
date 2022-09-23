@@ -38,20 +38,23 @@ class Player:
             self.player.play()
             self.paused = False
         else:
-            self.wait_time = 0
-            print("pierwszy raz")
-            self.paused = False
-            self.currentSong = self.songList[self.song_index]
-            video = pafy.new(self.currentSong['url'])
-            best = video.getbest()
-            playurl = best.url
+            try:
+                self.wait_time = 0
+                print("pierwszy raz")
+                self.paused = False
+                self.currentSong = self.songList[self.song_index]
+                video = pafy.new(self.currentSong['url'])
+                best = video.getbest()
+                playurl = best.url
 
-            self.Media = self.Instance.media_new(playurl)
-            self.player.set_media(self.Media)
-            self.player.play()
-            self.player.audio_set_delay(2000)
-            self.player.audio_set_volume(self.volume)
-
+                self.Media = self.Instance.media_new(playurl)
+                self.player.set_media(self.Media)
+                self.player.play()
+                self.player.audio_set_delay(2000)
+                self.player.audio_set_volume(self.volume)
+            except err:
+                print("ERROR: ", err)
+                self.skip()
         while self.wait_time < 5 or self.player.is_playing():
             self.wait_time += 1
             time.sleep(2)
@@ -148,7 +151,6 @@ class Player:
         self.Media = None
         self.paused = True
         self.currentSong = None
-        self.volume = 50
         self.skipped = False
         self.playlistName = ""
         self.playlistAuthor = ""
