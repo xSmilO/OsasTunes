@@ -22,6 +22,7 @@ class Player:
         self.song_index = 0
         self.looped = False
         self.shuffle = False
+        self.err_counter = 0
 
     def add_song(self, song):
         print("song added")
@@ -53,14 +54,17 @@ class Player:
                 self.player.audio_set_delay(2000)
                 self.player.audio_set_volume(self.volume)
             except err:
+                if self.err_counter >= 5:
+                    self.err_counter = 0
+                    self.skip()
+                self.err_counter += 1
                 print("ERROR: ", err)
-                self.skip()
         while self.wait_time < 5 or self.player.is_playing():
             self.wait_time += 1
             time.sleep(2)
 
         self.skipped = False
-
+        err_counter = 0
         if self.songList and self.paused == False and self.player.is_playing() == False:
             print("nastepna nuta")
             self.skip()
