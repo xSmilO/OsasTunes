@@ -1,7 +1,7 @@
 const fs = require("fs");
 
-const savePlaylistsPath = "./saved_playlists.json";
-const favoriteSongsPath = "./favorite_songs.json";
+const savePlaylistsPath = __dirname + "/saved_playlists.json";
+const favoriteSongsPath = __dirname + "/favorite_songs.json";
 
 //PLukDUAiQ_itZecSBneSADOsjgf4BPGA8Y
 class Save {

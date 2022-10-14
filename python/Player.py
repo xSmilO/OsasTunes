@@ -18,7 +18,6 @@ class Player:
         self.playlistName = ""
         self.playlistAuthor = ""
         self.color = "#9adcff"
-        self.wait_time = 0
         self.song_index = 0
         self.looped = False
         self.shuffle = False
@@ -40,7 +39,6 @@ class Player:
             self.paused = False
         else:
             try:
-                self.wait_time = 0
                 print("pierwszy raz")
                 self.paused = False
                 self.currentSong = self.songList[self.song_index]
@@ -53,19 +51,18 @@ class Player:
                 self.player.play()
                 self.player.audio_set_delay(2000)
                 self.player.audio_set_volume(self.volume)
-            except err:
+
+            except:
+                print("ERROR")
                 if self.err_counter >= 5:
                     self.err_counter = 0
                     self.skip()
                 self.err_counter += 1
-                print("ERROR: ", err)
-        while self.wait_time < 5 or self.player.is_playing():
-            self.wait_time += 1
+        while vlc.State.Opening == self.player.get_state() or self.player.is_playing():
             time.sleep(2)
-
         self.skipped = False
         err_counter = 0
-        if self.songList and self.paused == False and self.player.is_playing() == False:
+        if self.songList and self.paused == False and self.player.get_state() == vlc.State.Ended:
             print("nastepna nuta")
             self.skip()
 
