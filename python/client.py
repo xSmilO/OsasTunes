@@ -106,3 +106,8 @@ def get_player_timeline():
 def reset_player():
     player.pause()
     player.reset_player()
+
+
+while (True):
+    time.sleep(1)
+    player.check_status()

@@ -58,13 +58,13 @@ class Player:
                     self.err_counter = 0
                     self.skip()
                 self.err_counter += 1
-        while vlc.State.Opening == self.player.get_state() or self.player.is_playing():
-            time.sleep(2)
         self.skipped = False
         err_counter = 0
-        if self.songList and self.paused == False and self.player.get_state() == vlc.State.Ended:
-            print("nastepna nuta")
-            self.skip()
+
+        # print("State po: ", self.player.get_state())
+        # if self.songList and self.paused == False and self.player.get_state() == vlc.State.Ended:
+        #     print("nastepna nuta")
+        #     self.skip()
 
     def pause(self):
         self.player.pause()
@@ -158,3 +158,7 @@ class Player:
         self.song_index = 0
         self.looped = False
         self.shuffle = False
+
+    def check_status(self):
+        if self.player.get_state() == vlc.State.Ended:
+            self.skip()
