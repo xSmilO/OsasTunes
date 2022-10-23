@@ -150,6 +150,22 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("reset_player_python");
     });
 
+    socket.on("set_song_index", (index) => {
+        socket.broadcast.emit("set_song_index_python", index);
+    });
+
+    socket.on("remove_song_from_playlist", (data) => {
+        Save.removeSongFromPlaylist(data).then((playlist) => {
+            socket.emit("refresh_edited_playlist", playlist);
+        });
+    });
+
+    socket.on("remove_playlist", (playlist) => {
+        Save.removePlaylist(playlist).then((data) => {
+            socket.emit("get_saved_playlists", data);
+        });
+    });
+
     socket.on("connect_error", () => {
         setTimeout(() => {
             socket.connect();

@@ -70,6 +70,43 @@ class Save {
             });
         });
     }
+
+    static async removeSongFromPlaylist(data) {
+        return new Promise((res, rej) => {
+            fs.readFile(savePlaylistsPath, "utf-8", (err, jsonString) => {
+                if (err) return console.error(err);
+
+                let savePlaylistsJSON = JSON.parse(jsonString);
+
+                let playlist = savePlaylistsJSON[data.playlist.listId];
+                playlist.videos.splice(data.song_index, 1);
+                savePlaylistsJSON[data.playlist.listId] = playlist;
+
+                const JsonStringify = JSON.stringify(savePlaylistsJSON);
+                fs.writeFileSync(savePlaylistsPath, JsonStringify);
+
+                res(savePlaylistsJSON[data.playlist.listId]);
+            });
+        });
+    }
+
+    static async removePlaylist(playlist) {
+        return new Promise((res, rej) => {
+            fs.readFile(savePlaylistsPath, "utf-8", (err, jsonString) => {
+                if (err) return console.error(err);
+
+                const savePlaylistsJSON = JSON.parse(jsonString);
+
+                // saveSongJSON[songId] = song;
+                delete savePlaylistsJSON[playlist.listId];
+
+                const JsonStringify = JSON.stringify(savePlaylistsJSON);
+                fs.writeFileSync(savePlaylistsPath, JsonStringify);
+
+                res(savePlaylistsJSON);
+            });
+        });
+    }
 }
 
 module.exports = Save;

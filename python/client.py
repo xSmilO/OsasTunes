@@ -108,6 +108,11 @@ def reset_player():
     player.reset_player()
 
 
+@sio.on("set_song_index_python")
+def set_song_index(index):
+    player.set_song_index(index)
+
+
 while (True):
     time.sleep(1)
     player.check_status()

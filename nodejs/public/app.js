@@ -178,6 +178,10 @@ socket.on("sending_player_timeline", (currentTime) => {
     Generate.updateTimeline(currentTime);
 });
 
+socket.on("refresh_edited_playlist", (playlist) => {
+    Generate.updateEditPlaylistSection(playlist);
+});
+
 setInterval(() => {
     socket.emit("update_page");
 }, 1000);

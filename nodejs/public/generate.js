@@ -18,6 +18,19 @@ const timeline = document.querySelector(
     ".player .player-timeline .progress-bar"
 );
 
+const editPlaylistSection = document.querySelector(".edit-playlist-section");
+const editPlaylistSongsSection = document.querySelector(
+    ".edit-playlist-section .playlist .songs"
+);
+const editPlaylistSong = document.querySelector(".song.template");
+
+if (editPlaylistSection) {
+    const closeBtn = editPlaylistSection.querySelector(".close-btn");
+    closeBtn.addEventListener("click", () => {
+        editPlaylistSection.classList.remove("show");
+    });
+}
+
 if (favoriteSection) {
     const addPlaylistBtn = favoriteSection.querySelector(".add-playlist");
     addPlaylistBtn.addEventListener("click", () => {
@@ -155,7 +168,7 @@ class Generate {
 
     static async savedPlaylists(savedPlaylists, playlists) {
         const playlistTemplate = document.querySelector(".playlist.template");
-
+        playlistsSection.replaceChildren();
         let i = 0;
         savedPlaylists = [];
 
@@ -181,15 +194,50 @@ class Generate {
 
             const selectedPlaylist = logo.querySelector(".selected-playlist");
 
-            selectedPlaylist.addEventListener("mouseenter", (e) => {
-                newPlaylist.classList.add("selected");
-            });
-
-            selectedPlaylist.addEventListener("mouseout", (e) => {
-                newPlaylist.classList.remove("selected");
-            });
-
             selectedPlaylist.addEventListener("click", (e) => {
+                newPlaylist.classList.toggle("selected");
+            });
+
+            const addBtn = selectedPlaylist.querySelector(".add");
+            const editBtn = selectedPlaylist.querySelector(".edit");
+            const removeBtn = selectedPlaylist.querySelector(".remove");
+
+            removeBtn.addEventListener("transitionend", (e) => {
+                console.log("transistion end ");
+                selectedPlaylist.classList.toggle("hide");
+
+                if (selectedPlaylist.classList.contains("hide")) {
+                    addBtn.style.pointerEvents = "all";
+                    editBtn.style.pointerEvents = "all";
+                    removeBtn.style.pointerEvents = "all";
+                } else {
+                    addBtn.style.pointerEvents = "none";
+                    editBtn.style.pointerEvents = "none";
+                    removeBtn.style.pointerEvents = "none";
+                }
+            });
+
+            removeBtn.addEventListener("transitioncancel", (e) => {
+                console.log("cancelujesz ja co jest");
+                setTimeout(() => {
+                    if (selectedPlaylist.classList.contains("hide")) {
+                        console.log("nie posicaida");
+                        selectedPlaylist.classList.remove("hide");
+                        addBtn.style.pointerEvents = "all";
+                        editBtn.style.pointerEvents = "all";
+                        removeBtn.style.pointerEvents = "all";
+                    } else {
+                        selectedPlaylist.classList.add("hide");
+                        addBtn.style.pointerEvents = "none";
+                        editBtn.style.pointerEvents = "none";
+                        removeBtn.style.pointerEvents = "none";
+                    }
+                }, 200);
+            });
+
+            addBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+
                 const selectedPlaylist =
                     savedPlaylists[parseInt(newPlaylist.getAttribute("index"))];
 
@@ -201,12 +249,22 @@ class Generate {
                 });
             });
 
-            selectedPlaylist.addEventListener("touchstart", (e) => {
-                newPlaylist.classList.add("selected");
+            editBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const selectedPlaylist =
+                    savedPlaylists[parseInt(newPlaylist.getAttribute("index"))];
+                editPlaylistSection.classList.add("show");
+                newPlaylist.classList.remove("selected");
+
+                Generate.updateEditPlaylistSection(selectedPlaylist);
             });
 
-            selectedPlaylist.addEventListener("touchend", (e) => {
-                newPlaylist.classList.remove("selected");
+            removeBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const selectedPlaylist =
+                    savedPlaylists[parseInt(newPlaylist.getAttribute("index"))];
+
+                socket.emit("remove_playlist", selectedPlaylist);
             });
 
             i++;
@@ -242,7 +300,7 @@ class Generate {
 
             const playlistSongTemplate =
                 document.querySelector(" .song.template");
-
+            let index = 0;
             for (const songDetails of songList) {
                 if (!songDetails) continue;
                 const song = playlistSongTemplate.cloneNode(true);
@@ -253,7 +311,6 @@ class Generate {
 
                 const title = song.querySelector(".description .title p");
                 title.innerText = songDetails.title;
-
                 const author = song.querySelector(".details .author");
                 author.innerText = songDetails.author.name;
 
@@ -261,6 +318,16 @@ class Generate {
                 duration.innerText = songDetails.timestamp;
 
                 playlistSongs.appendChild(song);
+
+                song.setAttribute("index", index);
+
+                title.addEventListener("click", (e) => {
+                    socket.emit(
+                        "set_song_index",
+                        parseInt(song.getAttribute("index"))
+                    );
+                });
+                index++;
             }
         } catch (e) {
             // console.error(e);
@@ -335,7 +402,7 @@ class Generate {
     }
 
     static async updatePage(info, playBtn, paused) {
-        console.log(info);
+        // console.log(info);
 
         try {
             playBtn = document.querySelector(
@@ -362,5 +429,69 @@ class Generate {
             timeline.style.transform = `translateX(-${
                 100 - currentTime * 100
             }%)`;
+    }
+
+    static async updateEditPlaylistSection(playlist) {
+        console.log(playlist);
+        editPlaylistSongsSection.replaceChildren();
+        const playlistTitle =
+            editPlaylistSection.querySelector(".details .title");
+        playlistTitle.value = playlist.title;
+
+        const playlistAuthor =
+            editPlaylistSection.querySelector(".details .author");
+        playlistAuthor.value = playlist.author.name;
+
+        let i = 0;
+        result = playlist.videos;
+        console.log(playlist);
+
+        for (const song of playlist.videos) {
+            const newSong = editPlaylistSong.cloneNode(true);
+            newSong.classList.remove("template");
+            newSong.setAttribute("video-index", i);
+
+            const title = newSong.querySelector(".description .title");
+            title.innerText = song.title;
+
+            const author = newSong.querySelector(
+                ".description .details .author"
+            );
+            author.innerText = song.author.name;
+
+            const addBtn = newSong.querySelector(".buttons .add");
+            addBtn.addEventListener("click", () => {
+                addSongToQueue(newSong);
+                Animate.songAdded();
+            });
+
+            const removeBtn = newSong.querySelector(".buttons .remove");
+            removeBtn.addEventListener("click", () => {
+                socket.emit("remove_song_from_playlist", {
+                    song_index: parseInt(newSong.getAttribute("video-index")),
+                    playlist: playlist,
+                });
+            });
+            i++;
+            editPlaylistSongsSection.appendChild(newSong);
+        }
+
+        const titleInput = editPlaylistSection.querySelector(
+            ".playlist .details form .title"
+        );
+        const authorInput = editPlaylistSection.querySelector(
+            ".playlist .details form .author"
+        );
+
+        titleInput.addEventListener("focusout", (e) => {
+            if (titleInput.value) {
+                console.log(titleInput.value);
+                console.log(playlist);
+            }
+        });
+
+        authorInput.addEventListener("focusout", (e) => {
+            console.log(authorInput.value);
+        });
     }
 }

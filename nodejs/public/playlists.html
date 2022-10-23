@@ -24,7 +24,15 @@
         <div class="playlist template">
             <i class="fa-solid fa-compact-disc logo">
                 <div class="selected-playlist">
-                    <i class="fa-solid fa-plus"></i>
+                    <div class="add option" style="--index: 0">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                    <div class="edit option" style="--index: 1">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </div>
+                    <div class="remove option" style="--index: 2">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </div>
                 </div>
             </i>
             <div class="details">
@@ -32,6 +40,46 @@
                 <div class="author"></div>
             </div>
         </div>
+
+        <div class="song template">
+            <div class="description">
+                <h2 class="title">
+                    sifhajksdfhkjasdhfjkasdhfjkasdhjfkkjasdhfjkasdfemson
+                </h2>
+                <div class="details">
+                    <p class="author">siemano</p>
+                    <p class="duration">3:21</p>
+                </div>
+            </div>
+            <div class="buttons">
+                <div class="add">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="icon icon-tabler icon-tabler-playlist-add"
+                        viewBox="0 0 24 24"
+                        stroke-width="2"
+                        stroke="currentColor"
+                        fill=""
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="add"
+                    >
+                        <path
+                            stroke="none"
+                            d="M0 0h24v24H0z"
+                            fill="none"
+                        ></path>
+                        <path d="M19 8h-14"></path>
+                        <path d="M5 12h9"></path>
+                        <path d="M11 16h-6"></path>
+                        <path d="M15 16h6"></path>
+                        <path d="M18 13v6"></path>
+                    </svg>
+                </div>
+                <i class="fa-solid fa-trash-can remove"></i>
+            </div>
+        </div>
+
         <main class="main-container">
             <i class="fa-solid fa-chevron-left navigation-btn"></i>
             <nav class="navigation">
@@ -90,8 +138,33 @@
             </nav>
 
             <div class="playlist-added">Playlist added</div>
+            <div class="song-added">Song added</div>
             <div class="wrapper">
                 <section class="playlists-section"></section>
+                <section class="edit-playlist-section">
+                    <div class="playlist">
+                        <div class="details">
+                            <i class="fa-solid fa-xmark close-btn"></i>
+                            <i
+                                class="fa-solid fa-compact-disc playlist-logo"
+                            ></i>
+                            <form>
+                                <input
+                                    type="text"
+                                    class="title"
+                                    value="Najlepsza skladanka tego lata"
+                                />
+                                <input
+                                    type="text"
+                                    class="author"
+                                    value="Dj pierdolony rak wąttroby"
+                                />
+                            </form>
+                        </div>
+
+                        <div class="songs"></div>
+                    </div>
+                </section>
             </div>
         </main>
 

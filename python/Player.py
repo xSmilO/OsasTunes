@@ -54,10 +54,7 @@ class Player:
 
             except:
                 print("ERROR")
-                if self.err_counter >= 5:
-                    self.err_counter = 0
-                    self.skip()
-                self.err_counter += 1
+                self.skip()
         self.skipped = False
         err_counter = 0
 
@@ -162,3 +159,11 @@ class Player:
     def check_status(self):
         if self.player.get_state() == vlc.State.Ended:
             self.skip()
+
+    def set_song_index(self, index):
+        print(index)
+        self.song_index = index
+        self.paused = False
+        self.skipped = True
+        self.player.stop()
+        self.play()
