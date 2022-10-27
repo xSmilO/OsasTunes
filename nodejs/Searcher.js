@@ -10,10 +10,14 @@ class Searcher {
 
     static async searchPlaylist(key) {
         // PLukDUAiQ_itZecSBneSADOsjgf4BPGA8Y
+
+        // RDiD3rOICCfS8
         try {
             const result = await yts({ listId: key });
             return result;
-        } catch (e) {}
+        } catch (e) {
+            console.error(e);
+        }
     }
 }
 

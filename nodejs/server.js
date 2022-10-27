@@ -166,6 +166,18 @@ io.on("connection", (socket) => {
         });
     });
 
+    socket.on("change_playlist_name", (data) => {
+        Save.change_playlist_name(data).then((res) => {
+            socket.emit("get_saved_playlists", res);
+        });
+    });
+
+    socket.on("change_playlist_author", (data) => {
+        Save.change_playlist_author(data).then((res) => {
+            socket.emit("get_saved_playlists", res);
+        });
+    });
+
     socket.on("connect_error", () => {
         setTimeout(() => {
             socket.connect();

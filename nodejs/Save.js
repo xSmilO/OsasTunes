@@ -107,6 +107,44 @@ class Save {
             });
         });
     }
+
+    static async change_playlist_name(data) {
+        return new Promise((res, rej) => {
+            fs.readFile(savePlaylistsPath, "utf-8", (err, jsonString) => {
+                if (err) return console.error(err);
+
+                const savePlaylistsJSON = JSON.parse(jsonString);
+
+                // saveSongJSON[songId] = song;
+                savePlaylistsJSON[data.playlist.listId].title = data.value;
+
+                const JsonStringify = JSON.stringify(savePlaylistsJSON);
+                fs.writeFileSync(savePlaylistsPath, JsonStringify);
+
+                res(savePlaylistsJSON);
+            });
+        });
+    }
+
+    static async change_playlist_author(data) {
+        console.log(data);
+        return new Promise((res, rej) => {
+            fs.readFile(savePlaylistsPath, "utf-8", (err, jsonString) => {
+                if (err) return console.error(err);
+
+                const savePlaylistsJSON = JSON.parse(jsonString);
+
+                // saveSongJSON[songId] = song;
+                savePlaylistsJSON[data.playlist.listId].author.name =
+                    data.value;
+
+                const JsonStringify = JSON.stringify(savePlaylistsJSON);
+                fs.writeFileSync(savePlaylistsPath, JsonStringify);
+
+                res(savePlaylistsJSON);
+            });
+        });
+    }
 }
 
 module.exports = Save;

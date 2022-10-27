@@ -487,11 +487,21 @@ class Generate {
             if (titleInput.value) {
                 console.log(titleInput.value);
                 console.log(playlist);
+                socket.emit("change_playlist_name", {
+                    playlist: playlist,
+                    value: titleInput.value,
+                });
             }
         });
 
         authorInput.addEventListener("focusout", (e) => {
             console.log(authorInput.value);
+            if (authorInput.value) {
+                socket.emit("change_playlist_author", {
+                    playlist: playlist,
+                    value: authorInput.value,
+                });
+            }
         });
     }
 }
