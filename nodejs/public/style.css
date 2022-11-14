@@ -5,14 +5,14 @@
 }
 
 :root {
-    --bg-color: #222831;
-    --primary-color-400: #fd7014;
-    --secondary-color-400: #393e46;
-    --secondary-color-500: #282d35;
-    --secondary-color-600: #171c24;
+    --bg-color: rgba(17, 25, 40, 0.75);
+    --primary-color-400: rgb(94, 55, 164);
+    --secondary-color-400: rgba(17, 25, 40, 0.5);
+    --secondary-color-500: rgba(17, 25, 40, 0.8);
+    --secondary-color-600: rgba(17, 25, 40, 0.9);
     --font-color: #eeeeee;
-    --notification-color: #3ace3a;
-
+    --notification-color: rgba(94, 55, 164, 0.5);
+    --bg-url: url("bg.jpg");
     font-size: 16px;
 }
 
@@ -35,12 +35,20 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #212121;
+    background: var(--bg-url) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 .main-container {
     overflow: hidden;
-    background-color: var(--bg-color);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(17, 25, 40, 0.75);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
     display: flex;
     width: 70vw;
     height: 95vh;
@@ -53,7 +61,10 @@ body {
 }
 
 .main-container .navigation {
-    background-color: var(--secondary-color-400);
+    /* background-color: var(--secondary-color-400); */
+
+    /* border-radius: 12px; */
+    border-right: 1px solid rgba(255, 255, 255, 0.125);
     width: 20%;
     display: flex;
     justify-content: center;
@@ -73,12 +84,17 @@ body {
 
 .main-container .navigation .list .main {
     /* background-color: var(--secondary-color-500); */
+
     width: 100%;
     padding: 1em 2em;
     border-radius: 5px;
     color: var(--font-color);
     font-size: 1em;
     transition: all 0.5s ease-in, color 0.2s ease;
+}
+
+.main-container .navigation .list .main:hover {
+    background-color: var(--secondary-color-400);
 }
 
 .main-container .navigation .list .main .item {
@@ -98,13 +114,13 @@ body {
 
 .main-container section {
     flex-grow: 1;
-    background-color: var(--secondary-color-500);
+    /* background-color: var(--secondary-color-500); */
 }
 
 .main-container .navigation .list .main.active {
     color: var(--primary-color-400);
-    background-color: var(--secondary-color-500);
-    transition: width 5s ease;
+    /* background-color: var(--secondary-color-500); */
+    transition: width 5s ease, background-color 0.5s ease;
 }
 
 .main-container .navigation .list .main .more {
@@ -142,9 +158,10 @@ body {
 .main-container .playlist-search-section {
     display: flex;
     align-items: center;
-    padding: 100px 2em;
+    padding: 100px 2em 2em 1em;
     flex-direction: column;
     justify-content: space-between;
+    gap: 4em;
     position: relative;
 }
 
@@ -154,8 +171,11 @@ body {
     width: 40ch;
     max-height: 2em;
     font-size: 1.5em;
-    background-color: var(--secondary-color-600);
-    border-radius: 10px;
+    background-color: transparent;
+    /* background-color: var(--bg-color);
+    backdrop-filter: blur(16px) saturate(200%);
+    -webkit-backdrop-filter: blur(16px) saturate(200%); */
+    border-radius: 3px;
     overflow: hidden;
     border-bottom: 2px solid var(--primary-color-400);
 }
@@ -164,7 +184,7 @@ body {
 .main-container .playlist-search-section .search input {
     outline: none;
     border: none;
-    background-color: transparent;
+    background-color: inherit;
     color: var(--font-color);
     font-size: inherit;
     flex-grow: 1;
@@ -173,26 +193,29 @@ body {
 
 .main-container .search-section .search button,
 .main-container .playlist-search-section .search button {
-    background-color: var(--secondary-color-600);
+    /* background-color: var(--secondary-color-600); */
+    background-color: transparent;
     outline: none;
     border: none;
     color: var(--font-color);
     width: 10%;
-    transition: background-color 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
 }
 
 .main-container .search-section .search button:hover,
 .main-container .playlist-search-section .search button {
     cursor: pointer;
-    background-color: var(--primary-color-400);
+    /* background-color: var(--primary-color-400); */
+    color: var(--primary-color-400);
 }
 
 .main-container .search-result,
 .main-container .favorite-section .songs {
     display: flex;
+    gap: 0.5em;
     flex-direction: column;
     width: 70%;
-    max-height: 80%;
+    max-height: fit-content;
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -211,8 +234,13 @@ body {
     width: 100%;
     justify-content: space-between;
     /* background-color: var(--secondary-color-600) */
-    border-bottom: 3px solid var(--secondary-color-400);
-    padding: 0.5em;
+    background-color: var(--secondary-color-400);
+    backdrop-filter: blur(16px) saturate(100%);
+    -webkit-backdrop-filter: blur(16px) saturate(100%);
+    /* border-bottom: 3px solid var(--secondary-color-400); */
+    padding: 0.5em 1em;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.125);
 }
 
 .main-container .search-result .video .description,
@@ -334,7 +362,9 @@ svg {
     bottom: 0;
     width: 100%;
     height: 6em;
-    background-color: var(--secondary-color-600);
+    background-color: var(--secondary-color-400);
+    backdrop-filter: blur(16px) saturate(80%);
+    -webkit-backdrop-filter: blur(16px) saturate(80%);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -407,7 +437,7 @@ svg {
 .main-container .player-section .player .player-timeline .progress-bar {
     width: 100%;
     height: 100%;
-    background-color: var(--font-color);
+    background-color: var(--primary-color-400);
     transform: translateX(-100%);
     transition: transform 0.5s;
 }
@@ -417,6 +447,9 @@ svg {
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
 }
 
 .main-container .player-section .playlist-songs::-webkit-scrollbar {
@@ -428,7 +461,11 @@ svg {
     justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid var(--secondary-color-400);
-    padding: 0.5em 0.5em;
+    padding: 0.5em 1em;
+    border-radius: 12px;
+    background-color: var(--secondary-color-400);
+    backdrop-filter: blur(16px) saturate(80%);
+    -webkit-backdrop-filter: blur(16px) saturate(80%);
 }
 
 .main-container .player-section .playlist-songs .song .description .details {
@@ -483,6 +520,8 @@ svg {
     bottom: 1em;
     right: -20vw;
     background-color: var(--notification-color);
+    backdrop-filter: blur(16px) saturate(50%);
+    -webkit-backdrop-filter: blur(16px) saturate(50%);
     padding: 0.5em 1em;
     font-size: 1em;
     border-radius: 16px;
@@ -611,6 +650,9 @@ svg {
 .main-container .playlist-search-section .search-result .playlist .songs {
     width: 100%;
     max-height: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
 }
 
 .main-container .playlists-section {
@@ -736,7 +778,7 @@ svg {
     .option
     i {
     transform: rotate(calc(360deg / -3 * var(--index)));
-    color: var(--secondary-color-400);
+    color: var(--secondary-color-500);
 }
 
 .main-container .playlists-section .playlist.selected .logo .selected-playlist {
@@ -764,7 +806,10 @@ svg {
     left: -8em;
     width: 10em;
     padding: 1rem 2rem;
-    background-color: var(--secondary-color-600);
+    background-color: var(--secondary-color-400);
+    border: 1px solid rgba(255, 255, 255, 0.125);
+    backdrop-filter: blur(16px) saturate(100%);
+    -webkit-backdrop-filter: blur(16px) saturate(100%);
     z-index: 3;
     border-radius: 10px;
     clip-path: circle(0% at 100% 100%);
@@ -790,7 +835,6 @@ svg {
     padding: 0;
     flex-grow: 1;
     overflow: auto;
-    background-color: var(--secondary-color-500);
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -840,6 +884,7 @@ svg {
     width: 16px;
     border-radius: 12px;
     background: var(--font-color);
+    /* border: none; */
     cursor: pointer;
     /* margin-bottom: 32px; */
     -webkit-appearance: none;
@@ -873,7 +918,7 @@ svg {
     .volume
     .volume-container
     .volume-slider::-moz-range-thumb {
-    border: 2px solid var(--secondary-color-500);
+    border: 2px solid var(--primary-color-400);
     height: 16px;
     width: 16px;
     border-radius: 12px;
@@ -956,7 +1001,9 @@ svg {
     left: 100%;
     bottom: 100%;
     display: flex;
-    background-color: var(--secondary-color-600);
+    background-color: var(--secondary-color-400);
+    backdrop-filter: blur(16px) saturate(100%);
+    -webkit-backdrop-filter: blur(16px) saturate(100%);
     padding: 1em 1.5em;
     gap: 2em;
     border-top-left-radius: 10px;
@@ -1026,7 +1073,9 @@ svg {
     height: 100%;
     z-index: 6;
     justify-content: center;
-    background-color: var(--secondary-color-500);
+    background-color: var(--secondary-color-600);
+    backdrop-filter: blur(16px) saturate(80%);
+    -webkit-backdrop-filter: blur(16px) saturate(80%);
     top: 0;
     transform: translateY(-100%);
     transition: transform 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
@@ -1094,6 +1143,9 @@ svg {
     overflow-y: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
 }
 
 .main-container .edit-playlist-section .playlist .songs::-webkit-scrollbar {
@@ -1105,7 +1157,11 @@ svg {
     justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid var(--secondary-color-400);
-    padding: 0.5em 0.5em;
+    padding: 0.5em 1em;
+    background-color: var(--secondary-color-500);
+    backdrop-filter: blur(20px) saturate(100%);
+    -webkit-backdrop-filter: blur(20px) saturate(100%);
+    border-radius: 12px;
 }
 
 .main-container
@@ -1280,6 +1336,9 @@ svg {
         font-size: 2em;
         transform: translateX(-200%);
         transition: transform 0.5s ease-in-out;
+        background-color: var(--secondary-color-500);
+        backdrop-filter: blur(16px) saturate(200%);
+        -webkit-backdrop-filter: blur(16px) saturate(200%);
     }
 
     .main-container .navigation.show {

@@ -127,7 +127,7 @@ class Save {
     }
 
     static async change_playlist_author(data) {
-        console.log(data);
+        // console.log(data);
         return new Promise((res, rej) => {
             fs.readFile(savePlaylistsPath, "utf-8", (err, jsonString) => {
                 if (err) return console.error(err);

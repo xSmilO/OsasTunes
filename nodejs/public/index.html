@@ -4,154 +4,136 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css
+"
+        />
+        <link rel="stylesheet" href="style.css" />
+        <title>Music player</title>
     </head>
     <body>
-        <!DOCTYPE html>
-        <html lang="en">
-            <head>
-                <meta charset="UTF-8" />
-                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1.0"
-                />
-                <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link
-                    rel="preconnect"
-                    href="https://fonts.gstatic.com"
-                    crossorigin
-                />
-                <link
-                    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap"
-                    rel="stylesheet"
-                />
-                <link
-                    rel="stylesheet"
-                    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css
-"
-                />
-                <link rel="stylesheet" href="style.css" />
-                <title>Music player</title>
-            </head>
-            <body>
-                <button class="stop_socket">stop socket</button>
+        <button class="stop_socket">stop socket</button>
 
-                <main class="main-container">
-                    <i class="fa-solid fa-chevron-left navigation-btn"></i>
-                    <nav class="navigation">
-                        <div class="list">
-                            <div class="home main">
-                                <a class="item">
-                                    <i class="fa-solid fa-house"></i>
-                                    <h2>HOME</h2>
-                                </a>
-                                <div class="more">
-                                    <a
-                                        href="/"
-                                        class="more-item"
-                                        style="--animation-delay: 0.1s"
-                                        >search</a
-                                    >
-                                    <a
-                                        href="/player.html"
-                                        class="more-item"
-                                        style="--animation-delay: 0.2s"
-                                        >player</a
-                                    >
-                                </div>
-                            </div>
-                            <div class="playlist main">
-                                <a class="item">
-                                    <i class="fa-solid fa-compact-disc"></i>
-                                    <h2>PLAYLIST</h2>
-                                </a>
+        <main class="main-container">
+            <i class="fa-solid fa-chevron-left navigation-btn"></i>
+            <nav class="navigation">
+                <div class="list">
+                    <div class="home main">
+                        <a class="item">
+                            <i class="fa-solid fa-house"></i>
+                            <h2>HOME</h2>
+                        </a>
+                        <div class="more">
+                            <a
+                                href="/"
+                                class="more-item"
+                                style="--animation-delay: 0.1s"
+                                >search</a
+                            >
+                            <a
+                                href="/player.html"
+                                class="more-item"
+                                style="--animation-delay: 0.2s"
+                                >player</a
+                            >
+                        </div>
+                    </div>
+                    <div class="playlist main">
+                        <a class="item">
+                            <i class="fa-solid fa-compact-disc"></i>
+                            <h2>PLAYLIST</h2>
+                        </a>
 
-                                <div class="more">
-                                    <a
-                                        href="/playlist-search.html"
-                                        class="more-item"
-                                        style="--animation-delay: 0.1s"
-                                    >
-                                        search
-                                    </a>
-                                    <a
-                                        href="/playlists.html"
-                                        class="more-item"
-                                        style="--animation-delay: 0.2s"
-                                    >
-                                        my playlist's
-                                    </a>
-                                </div>
-                            </div>
+                        <div class="more">
+                            <a
+                                href="/playlist-search.html"
+                                class="more-item"
+                                style="--animation-delay: 0.1s"
+                            >
+                                search
+                            </a>
+                            <a
+                                href="/playlists.html"
+                                class="more-item"
+                                style="--animation-delay: 0.2s"
+                            >
+                                my playlist's
+                            </a>
+                        </div>
+                    </div>
 
-                            <div class="favorite main">
-                                <a href="/favorites.html" class="item">
-                                    <i class="fa-solid fa-star"></i>
-                                    <h2>FAVORITES</h2>
-                                </a>
+                    <div class="favorite main">
+                        <a href="/favorites.html" class="item">
+                            <i class="fa-solid fa-star"></i>
+                            <h2>FAVORITES</h2>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <section class="search-section">
+                <div class="song-added">
+                    <p>song added</p>
+                </div>
+
+                <form class="search">
+                    <input type="text" name="" id="" />
+                    <button type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </form>
+
+                <div class="search-result">
+                    <div class="video template">
+                        <div class="description">
+                            <h2 class="title"></h2>
+                            <div class="details">
+                                <p class="author"></p>
+                                <p class="duration"></p>
                             </div>
                         </div>
-                    </nav>
-
-                    <section class="search-section">
-                        <div class="song-added">
-                            <p>song added</p>
-                        </div>
-
-                        <form class="search">
-                            <input type="text" name="" id="" />
-                            <button type="submit">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </button>
-                        </form>
-
-                        <div class="search-result">
-                            <div class="video template">
-                                <div class="description">
-                                    <h2 class="title"></h2>
-                                    <div class="details">
-                                        <p class="author"></p>
-                                        <p class="duration"></p>
-                                    </div>
-                                </div>
-                                <div class="buttons">
-                                    <i class="fa-solid fa-heart heart"></i>
-                                    <div class="add">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            class="icon icon-tabler icon-tabler-playlist-add"
-                                            viewBox="0 0 24 24"
-                                            stroke-width="2"
-                                            stroke="currentColor"
-                                            fill=""
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="add"
-                                        >
-                                            <path
-                                                stroke="none"
-                                                d="M0 0h24v24H0z"
-                                                fill="none"
-                                            ></path>
-                                            <path d="M19 8h-14"></path>
-                                            <path d="M5 12h9"></path>
-                                            <path d="M11 16h-6"></path>
-                                            <path d="M15 16h6"></path>
-                                            <path d="M18 13v6"></path>
-                                        </svg>
-                                    </div>
-                                </div>
+                        <div class="buttons">
+                            <i class="fa-solid fa-heart heart"></i>
+                            <div class="add">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="icon icon-tabler icon-tabler-playlist-add"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="2"
+                                    stroke="currentColor"
+                                    fill=""
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="add"
+                                >
+                                    <path
+                                        stroke="none"
+                                        d="M0 0h24v24H0z"
+                                        fill="none"
+                                    ></path>
+                                    <path d="M19 8h-14"></path>
+                                    <path d="M5 12h9"></path>
+                                    <path d="M11 16h-6"></path>
+                                    <path d="M15 16h6"></path>
+                                    <path d="M18 13v6"></path>
+                                </svg>
                             </div>
                         </div>
-                    </section>
-                </main>
+                    </div>
+                </div>
+            </section>
+        </main>
 
-                <script src="/socket.io/socket.io.js"></script>
-                <script src="animations.js"></script>
-                <script src="generate.js"></script>
-                <script src="app.js"></script>
-            </body>
-        </html>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="animations.js"></script>
+        <script src="generate.js"></script>
+        <script src="app.js"></script>
     </body>
 </html>
