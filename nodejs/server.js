@@ -81,6 +81,12 @@ io.on("connection", (socket) => {
         socket.emit("playlist_saved");
     });
 
+    socket.on("add_song_to_playlist", (data) => {
+        Save.add_song_to_playlist(data).then(() => {
+            socket.emit("song_added");
+        });
+    });
+
     socket.on("get_saved_playlists", () => {
         Save.getPlaylists().then((playlists) => {
             socket.emit("get_saved_playlists", playlists);

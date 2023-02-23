@@ -1,3 +1,5 @@
+const playlistList = document.querySelector(".search-section .playlist-list");
+
 const playlistSearchResult = document.querySelector(
     ".playlist-search-section .search-result"
 );
@@ -43,6 +45,8 @@ if (favoriteSection) {
     });
 }
 
+let selectedSong = null;
+
 function addSongToQueue(elem) {
     const videoIndex = parseInt(elem.getAttribute("video-index"));
     // console.log(videoIndex);
@@ -59,9 +63,20 @@ function removeSongFromFavorite(songId) {
     socket.emit("remove_favorite_song", songId);
 }
 
+function showPlaylistList(event, song) {
+    selectedSong = song;
+    playlistList.classList.toggle("hidden");
+    const elementRect = event.target.getBoundingClientRect();
+    const sectionRect = searchSection.getBoundingClientRect();
+    playlistList.style.top = elementRect.top + "px";
+    playlistList.style.left =
+        elementRect.left - sectionRect.left - playlistList.offsetWidth + "px";
+}
+
 class Generate {
     static async searchResult(videos) {
         let index = 0;
+        socket.emit("get_saved_playlists");
         for (const videoDetails of videos) {
             const newVideo = videoResultTemplate.cloneNode(true);
             newVideo.className = "video";
@@ -93,11 +108,41 @@ class Generate {
                 addSongToFavorite(newVideo);
             });
 
+            const addToPlaylist = newVideo.querySelector(".buttons .add-to");
+
+            addToPlaylist.addEventListener("click", (e) => {
+                showPlaylistList(e, videoDetails);
+            });
+
             index++;
             searchResult.appendChild(newVideo);
         }
 
         return videos;
+    }
+
+    static async playlistsList(playlists) {
+        // console.log("Playlistst");
+        // console.log(playlists);
+        playlistList.replaceChildren();
+        // playlistList.classList.remove("hidden");
+        for (let playlistKey of Object.keys(playlists)) {
+            const div = document.createElement("div");
+            const playlist = playlists[playlistKey];
+            div.className = "playlist";
+            div.setAttribute("playlist-id", playlistKey);
+            div.innerText = playlist.title;
+            playlistList.appendChild(div);
+            div.addEventListener("click", () => {
+                console.log("dodalem");
+                console.log(selectedSong);
+                console.log(playlistKey);
+                socket.emit("add_song_to_playlist", {
+                    song: selectedSong,
+                    playlistId: playlistKey,
+                });
+            });
+        }
     }
 
     static async playlistResult(playlist) {
@@ -218,10 +263,10 @@ class Generate {
             });
 
             removeBtn.addEventListener("transitioncancel", (e) => {
-                console.log("cancelujesz ja co jest");
+                // console.log("cancelujesz ja co jest");
                 setTimeout(() => {
                     if (selectedPlaylist.classList.contains("hide")) {
-                        console.log("nie posicaida");
+                        // console.log("nie posicaida");
                         selectedPlaylist.classList.remove("hide");
                         addBtn.style.pointerEvents = "all";
                         editBtn.style.pointerEvents = "all";
@@ -458,6 +503,11 @@ class Generate {
                 ".description .details .author"
             );
             author.innerText = song.author.name;
+
+            const duration = newSong.querySelector(
+                ".description .details .duration"
+            );
+            duration.innerText = song.timestamp;
 
             const addBtn = newSong.querySelector(".buttons .add");
             addBtn.addEventListener("click", () => {

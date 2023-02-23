@@ -145,6 +145,19 @@ class Save {
             });
         });
     }
+
+    static async add_song_to_playlist(data) {
+        return new Promise((res, rej) => {
+            fs.readFile(savePlaylistsPath, "utf-8", (err, jsonString) => {
+                const playlistsJSON = JSON.parse(jsonString);
+
+                playlistsJSON[data.playlistId].videos.push(data.song);
+                const JsonStringify = JSON.stringify(playlistsJSON);
+                fs.writeFileSync(savePlaylistsPath, JsonStringify);
+                res();
+            });
+        });
+    }
 }
 
 module.exports = Save;

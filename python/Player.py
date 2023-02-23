@@ -1,6 +1,8 @@
+import json
 import pafy
 import vlc
 import time
+from yt_dlp import YoutubeDL
 from random import randint
 
 
@@ -22,6 +24,7 @@ class Player:
         self.looped = False
         self.shuffle = False
         self.err_counter = 0
+        self.ytdl = YoutubeDL()
 
     def add_song(self, song):
         print("song added")
@@ -42,10 +45,19 @@ class Player:
                 print("pierwszy raz")
                 self.paused = False
                 self.currentSong = self.songList[self.song_index]
-                video = pafy.new(self.currentSong['url'])
-                best = video.getbest()
-                playurl = best.url
+                # video = pafy.new(self.currentSong['url'])
+                # best = video.getbest()
+                # playurl = best.url
+                info = self.ytdl.extract_info(
+                    self.currentSong['url'], download=False)
 
+                playurl = None
+
+                for data in info['formats']:
+                    if data["audio_ext"] != "none":
+                        playurl = data.get("url")
+                # playurl = info['formats'][len(info['formats']) - 1].get("url")
+                # print(playurl)
                 self.Media = self.Instance.media_new(playurl)
                 self.player.set_media(self.Media)
                 self.player.play()

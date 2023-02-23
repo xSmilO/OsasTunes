@@ -5,6 +5,7 @@ stopSocketBtn.addEventListener("click", (e) => {
     socket.emit("stop_socket");
 });
 
+const searchSection = document.querySelector(".search-section");
 const searchForm = document.querySelector(".search-section .search");
 const searchInput = document.querySelector(".search-section .search input");
 const searchPlaylistForm = document.querySelector(
@@ -153,7 +154,13 @@ if (playlistsSection) {
 socket.emit("get_favorite_songs");
 
 socket.on("get_saved_playlists", (playlists) => {
-    Generate.savedPlaylists(savedPlaylists, playlists);
+    if (playlistsSection) {
+        Generate.savedPlaylists(savedPlaylists, playlists);
+    }
+
+    if (searchSection) {
+        Generate.playlistsList(playlists);
+    }
 });
 
 socket.on("playlist_saved", () => {
