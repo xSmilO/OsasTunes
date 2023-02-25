@@ -22,9 +22,9 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("reset_python");
     });
 
-    socket.on("search", (key) => {
-        if (key == "") return;
-        Searcher.search(key).then((res) => {
+    socket.on("search", (options) => {
+        if (options.value == "") return;
+        Searcher.search(options).then((res) => {
             io.emit("search_result", res);
         });
     });
@@ -70,8 +70,8 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("song_added");
     });
 
-    socket.on("search_playlist", (key) => {
-        Searcher.searchPlaylist(key).then((data) => {
+    socket.on("search_playlist", (options) => {
+        Searcher.searchPlaylist(options).then((data) => {
             socket.emit("search_playlist_result", data);
         });
     });

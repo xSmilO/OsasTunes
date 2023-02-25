@@ -7,6 +7,8 @@
 :root {
     --bg-color: rgba(17, 25, 40, 0.75);
     --primary-color-400: rgb(94, 55, 164);
+    --primary-color-500: rgb(74, 35, 144);
+    --primary-color-600: rgb(54, 15, 124);
     --secondary-color-400: rgba(17, 25, 40, 0.5);
     --secondary-color-500: rgba(17, 25, 40, 0.8);
     --secondary-color-600: rgba(17, 25, 40, 0.9);
@@ -167,16 +169,18 @@ body {
 
 .main-container .search-section .search,
 .main-container .playlist-search-section .search {
+    position: relative;
     display: flex;
     width: 40ch;
     max-height: 2em;
     font-size: 1.5em;
     background-color: transparent;
+    align-items: center;
     /* background-color: var(--bg-color);
     backdrop-filter: blur(16px) saturate(200%);
     -webkit-backdrop-filter: blur(16px) saturate(200%); */
     border-radius: 3px;
-    overflow: hidden;
+    /* overflow: hidden; */
     border-bottom: 2px solid var(--primary-color-400);
 }
 
@@ -1275,6 +1279,40 @@ svg {
 .main-container .edit-playlist-section .playlist .songs .song .buttons .add {
     width: 1.5em;
     height: 1.5em;
+}
+
+.main-container .search-section .filters,
+.main-container .playlist-search-section .filters {
+    position: absolute;
+    top: -2rem;
+    left: 1rem;
+    display: flex;
+    gap: 1em;
+}
+
+.main-container .search-section .filters .filter,
+.main-container .playlist-search-section .filters .filter {
+    font-size: 0.5em;
+    cursor: pointer;
+    border: 2px solid var(--primary-color-500);
+    border-radius: 0.5em;
+    padding: 0.5em 0.8em;
+    transition: all 0.5s ease;
+}
+
+.main-container .search-section .filters .filter.active,
+.main-container .playlist-search-section .filters .filter.active {
+    background-color: var(--primary-color-400);
+}
+
+.main-container .search-section .filters .filter:hover,
+.main-container .playlist-search-section .filters .filter:hover {
+    background-color: var(--primary-color-400);
+}
+
+.main-container .search-section .filters .selected-filter,
+.main-container .playlist-search-section .filters .selected-filter {
+    display: none;
 }
 
 @media screen and (max-width: 1600px) {

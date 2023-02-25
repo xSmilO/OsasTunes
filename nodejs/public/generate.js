@@ -26,6 +26,25 @@ const editPlaylistSongsSection = document.querySelector(
 );
 const editPlaylistSong = document.querySelector(".song.template");
 
+const searchFilters = document.querySelector(".filters");
+
+if (searchFilters) {
+    const filters = searchFilters.querySelectorAll(".filter");
+    const selectedFilter = searchFilters.querySelector(".selected-filter");
+
+    for (const filter of filters) {
+        filter.addEventListener("click", (e) => {
+            e.stopPropagation();
+            for (let temp of filters) {
+                temp.classList.remove("active");
+            }
+
+            selectedFilter.innerHTML = filter.innerHTML;
+            filter.classList.add("active");
+        });
+    }
+}
+
 if (editPlaylistSection) {
     const closeBtn = editPlaylistSection.querySelector(".close-btn");
     closeBtn.addEventListener("click", () => {
@@ -129,14 +148,16 @@ class Generate {
         for (let playlistKey of Object.keys(playlists)) {
             const div = document.createElement("div");
             const playlist = playlists[playlistKey];
+
             div.className = "playlist";
             div.setAttribute("playlist-id", playlistKey);
             div.innerText = playlist.title;
             playlistList.appendChild(div);
+
             div.addEventListener("click", () => {
-                console.log("dodalem");
-                console.log(selectedSong);
-                console.log(playlistKey);
+                // console.log("dodalem");
+                // console.log(selectedSong);
+                // console.log(playlistKey);
                 socket.emit("add_song_to_playlist", {
                     song: selectedSong,
                     playlistId: playlistKey,
@@ -175,8 +196,11 @@ class Generate {
             newVideo.setAttribute("video-index", index);
 
             videoDetails.timestamp = videoDetails.duration.timestamp;
-            videoDetails.url =
-                "https://www.youtube.com/watch?v=" + videoDetails.videoId;
+
+            if ("soundcloud" in videoDetails == false) {
+                videoDetails.url =
+                    "https://www.youtube.com/watch?v=" + videoDetails.videoId;
+            }
 
             const title = newVideo.querySelector(".description .title");
             title.innerText = videoDetails.title;
@@ -248,7 +272,7 @@ class Generate {
             const removeBtn = selectedPlaylist.querySelector(".remove");
 
             removeBtn.addEventListener("transitionend", (e) => {
-                console.log("transistion end ");
+                // console.log("transistion end ");
                 selectedPlaylist.classList.toggle("hide");
 
                 if (selectedPlaylist.classList.contains("hide")) {
@@ -350,7 +374,7 @@ class Generate {
                 if (!songDetails) continue;
                 const song = playlistSongTemplate.cloneNode(true);
                 song.className = "song";
-
+                // console.log(songDetails);
                 if (currentSong && songDetails.videoId == currentSong?.videoId)
                     song.classList.add("current");
 
@@ -477,7 +501,7 @@ class Generate {
     }
 
     static async updateEditPlaylistSection(playlist) {
-        console.log(playlist);
+        // console.log(playlist);
         editPlaylistSongsSection.replaceChildren();
         const playlistTitle =
             editPlaylistSection.querySelector(".details .title");
@@ -487,9 +511,14 @@ class Generate {
             editPlaylistSection.querySelector(".details .author");
         playlistAuthor.value = playlist.author.name;
 
+        const playlistLogo = editPlaylistSection.querySelector(
+            ".details .playlist-logo"
+        );
+
+        playlistLogo.style.backgroundColor = `${playlist.color}`;
+
         let i = 0;
         result = playlist.videos;
-        console.log(playlist);
 
         for (const song of playlist.videos) {
             const newSong = editPlaylistSong.cloneNode(true);
@@ -535,8 +564,8 @@ class Generate {
 
         titleInput.addEventListener("focusout", (e) => {
             if (titleInput.value) {
-                console.log(titleInput.value);
-                console.log(playlist);
+                // console.log(titleInput.value);
+                // console.log(playlist);
                 socket.emit("change_playlist_name", {
                     playlist: playlist,
                     value: titleInput.value,
@@ -545,7 +574,7 @@ class Generate {
         });
 
         authorInput.addEventListener("focusout", (e) => {
-            console.log(authorInput.value);
+            // console.log(authorInput.value);
             if (authorInput.value) {
                 socket.emit("change_playlist_author", {
                     playlist: playlist,

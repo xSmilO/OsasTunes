@@ -1,5 +1,4 @@
 import json
-import pafy
 import vlc
 import time
 from yt_dlp import YoutubeDL
@@ -56,6 +55,7 @@ class Player:
                 for data in info['formats']:
                     if data["audio_ext"] != "none":
                         playurl = data.get("url")
+
                 # playurl = info['formats'][len(info['formats']) - 1].get("url")
                 # print(playurl)
                 self.Media = self.Instance.media_new(playurl)
@@ -169,6 +169,7 @@ class Player:
         self.shuffle = False
 
     def check_status(self):
+        # print(self.player.get_state())
         if self.player.get_state() == vlc.State.Ended:
             self.skip()
 

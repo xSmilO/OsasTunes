@@ -90,6 +90,11 @@
                     <button type="submit">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
+                    <div class="filters">
+                        <div class="selected-filter">youtube</div>
+                        <div class="filter active">youtube</div>
+                        <div class="filter">soundcloud</div>
+                    </div>
                 </form>
 
                 <div class="search-result">
@@ -135,8 +140,8 @@
         </main>
 
         <script src="/socket.io/socket.io.js"></script>
-        <script src="animations.js"></script>
-        <script src="generate.js"></script>
-        <script src="app.js"></script>
+        <script src="animations.js" defer></script>
+        <script src="generate.js" defer></script>
+        <script src="app.js" defer></script>
     </body>
 </html>

@@ -45,6 +45,8 @@ const shuffleBtn = document.querySelector(
     ".player-controller .options .more-options .container .shuffle"
 );
 
+const filter = document.querySelector(".filter");
+
 let result = [];
 let savedPlaylists = [];
 let favoriteSongs = [];
@@ -54,8 +56,10 @@ let paused = true;
 try {
     searchForm.addEventListener("submit", (e) => {
         e.preventDefault();
-
-        socket.emit("search", searchInput.value);
+        const soundcloud =
+            searchFilters.querySelector(".selected-filter").innerHTML ==
+            "soundcloud";
+        socket.emit("search", { value: searchInput.value, soundcloud });
         searchInput.value = "";
     });
 } catch (e) {}
@@ -103,7 +107,13 @@ try {
 try {
     searchPlaylistForm.addEventListener("submit", (e) => {
         e.preventDefault();
-        socket.emit("search_playlist", searchPlaylistInput.value);
+        const soundcloud =
+            searchFilters.querySelector(".selected-filter").innerHTML ==
+            "soundcloud";
+        socket.emit("search_playlist", {
+            value: searchPlaylistInput.value,
+            soundcloud,
+        });
 
         searchPlaylistInput.value = "";
     });
