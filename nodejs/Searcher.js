@@ -55,7 +55,7 @@ class Searcher {
 
         playlist.title = setInfo.title;
         playlist.author.name = setInfo.user.username;
-
+        playlist.listId = setInfo.id;
         playlist.videos = [];
 
         for (let trackInfo of setInfo.tracks) {

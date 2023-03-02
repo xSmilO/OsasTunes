@@ -13,7 +13,6 @@ class Save {
             const listId = playlist.listId;
 
             savePlaylistJSON[listId] = playlist;
-
             const JsonStringify = JSON.stringify(savePlaylistJSON);
 
             fs.writeFile(savePlaylistsPath, JsonStringify, (err) => {
