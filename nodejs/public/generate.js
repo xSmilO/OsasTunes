@@ -60,6 +60,7 @@ if (favoriteSection) {
             title: "Your favorite songs",
             author: "You",
             color: "#ffc745",
+            id: "",
         });
     });
 }
@@ -306,7 +307,6 @@ class Generate {
 
             addBtn.addEventListener("click", (e) => {
                 e.stopPropagation();
-
                 const selectedPlaylist =
                     savedPlaylists[parseInt(newPlaylist.getAttribute("index"))];
 
@@ -315,6 +315,7 @@ class Generate {
                     title: selectedPlaylist.title,
                     author: selectedPlaylist.author.name,
                     color: selectedPlaylist.color,
+                    listId: selectedPlaylist.listId,
                 });
             });
 

@@ -11,8 +11,6 @@ class Searcher {
 
         const tracks = [];
 
-        // console.log(res);
-
         for (let i = 0; i < res.collection.length; i++) {
             let track = {};
             track.title = res.collection[i].title;
@@ -28,12 +26,14 @@ class Searcher {
             // track.soundcloud = true;
 
             track.url = res.collection[i].permalink_url;
-            track.videoId = res.collection[i].id;
+            track.videoId = `${res.collection[i].id}`;
+            track.duration = {};
+            track.duration.seconds = Math.round(duration / 1000);
+            track.duration.timestamp = track.timestamp;
 
             tracks.push(track);
         }
 
-        // console.log(tracks);
         return tracks;
     }
 
@@ -43,44 +43,65 @@ class Searcher {
         } else {
             const result = await yts(options.value);
             const videos = result.videos.slice(0, 20);
-            return videos;
+            const songs = [];
+
+            for (const video of videos) {
+                let song = {};
+                song.videoId = video.videoId;
+                song.url = video.url;
+                song.author = {};
+                song.author.name = video.author.name;
+                song.timestamp = video.timestamp;
+                song.duration = {};
+                song.duration.seconds = video.duration.seconds;
+                song.duration.timestamp = video.duration.timestamp;
+                song.title = video.title;
+                songs.push(song);
+            }
+
+            return songs;
         }
     }
 
     static async searchSoundCloudSet(url) {
-        const setInfo = await scdl.getSetInfo(url);
-        // console.log(setInfo);
-        const playlist = {};
-        playlist.author = {};
+        try {
+            const setInfo = await scdl.getSetInfo(url);
+            // console.log(setInfo);
+            const playlist = {};
+            playlist.author = {};
 
-        playlist.title = setInfo.title;
-        playlist.author.name = setInfo.user.username;
-        playlist.listId = setInfo.id;
-        playlist.videos = [];
+            playlist.title = setInfo.title;
+            playlist.author.name = setInfo.user.username;
+            playlist.listId = setInfo.id;
+            playlist.videos = [];
 
-        for (let trackInfo of setInfo.tracks) {
-            let track = {};
-            track.title = trackInfo.title;
-            track.author = {};
-            track.author.name = trackInfo.user.username;
+            for (let trackInfo of setInfo.tracks) {
+                let track = {};
+                track.title = trackInfo.title;
+                track.author = {};
+                track.author.name = trackInfo.user.username;
 
-            let duration = trackInfo.full_duration;
-            let minutes = Math.floor(duration / 60000);
-            let seconds = ((duration % 60000) / 1000).toFixed(0);
+                let duration = trackInfo.full_duration;
+                let minutes = Math.floor(duration / 60000);
+                let seconds = ((duration % 60000) / 1000).toFixed(0);
 
-            track.duration = {};
-            if (seconds < 10) seconds = "0" + seconds;
-            track.duration.timestamp = minutes + ":" + seconds;
-            // track.soundcloud = true;
+                track.duration = {};
+                if (seconds < 10) seconds = "0" + seconds;
+                track.duration.timestamp = minutes + ":" + seconds;
+                track.duration.seconds = Math.round(duration / 1000);
+                // track.soundcloud = true;
 
-            track.url = trackInfo.permalink_url;
-            track.videoId = trackInfo.id;
-            track.soundcloud = true;
+                track.url = trackInfo.permalink_url;
+                track.videoId = `${trackInfo.id}`;
+                // track.soundcloud = true;
 
-            playlist.videos.push(track);
+                playlist.videos.push(track);
+            }
+
+            return playlist;
+        } catch (e) {
+            console.error("soundcloud error");
         }
-
-        return playlist;
     }
 
     static async searchPlaylist(options) {
@@ -91,9 +112,26 @@ class Searcher {
             if (options.soundcloud)
                 return Searcher.searchSoundCloudSet(options.value);
             const result = await yts({ listId: options.value });
+            const songs = [];
+            for (const video of result.videos) {
+                let song = {};
+                song.videoId = video.videoId;
+                song.url = `https://www.youtube.com/watch?v=${video.videoId}`;
+                song.author = {};
+                song.author.name = video.author.name;
+                song.timestamp = video.duration.timestamp;
+                song.duration = {};
+                song.duration.seconds = video.duration.seconds;
+                song.duration.timestamp = video.duration.timestamp;
+                song.title = video.title;
+                songs.push(song);
+            }
+
+            result.videos = songs;
+
             return result;
         } catch (e) {
-            console.error(e);
+            console.log(res);
         }
     }
 }

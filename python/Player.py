@@ -19,6 +19,7 @@ class Player:
         self.playlistName = ""
         self.playlistAuthor = ""
         self.color = "#9adcff"
+        self.listId = ""
         self.song_index = 0
         self.looped = False
         self.shuffle = False
@@ -35,7 +36,12 @@ class Player:
         if self.song_index >= len(self.songList):
             self.reset_player()
             return
-        if self.paused and self.currentSong and self.player.is_playing() == False and self.skipped == False:
+        if (
+            self.paused
+            and self.currentSong
+            and self.player.is_playing() == False
+            and self.skipped == False
+        ):
             print("kontynuacja")
             self.player.play()
             self.paused = False
@@ -47,12 +53,11 @@ class Player:
                 # video = pafy.new(self.currentSong['url'])
                 # best = video.getbest()
                 # playurl = best.url
-                info = self.ytdl.extract_info(
-                    self.currentSong['url'], download=False)
+                info = self.ytdl.extract_info(self.currentSong["url"], download=False)
 
                 playurl = None
 
-                for data in info['formats']:
+                for data in info["formats"]:
                     if data["audio_ext"] != "none":
                         playurl = data.get("url")
 
@@ -124,15 +129,17 @@ class Player:
         info["playlistName"] = self.playlistName
         info["playlistAuthor"] = self.playlistAuthor
         info["color"] = self.color
+        info["listId"] = self.listId
         info["looped"] = self.looped
         info["shuffle"] = self.shuffle
 
         return info
 
-    def set_playlist_info(self, title, author, color="#fd7014"):
+    def set_playlist_info(self, title, author, color="#770596", listId=""):
         self.playlistName = title
         self.playlistAuthor = author
         self.color = color
+        self.listId = listId
 
     def set_songList_from_playlist(self, songs):
         self.reset_player()
@@ -144,11 +151,11 @@ class Player:
 
     def change_looped(self):
         self.shuffle = False
-        self.looped = ~ self.looped
+        self.looped = ~self.looped
 
     def change_shuffle(self):
         self.looped = False
-        self.shuffle = ~ self.shuffle
+        self.shuffle = ~self.shuffle
 
     def get_player_timeline(self):
         # timeline = {}

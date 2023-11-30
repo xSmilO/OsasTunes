@@ -23,6 +23,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("search", (options) => {
+        // console.log(options);
         if (options.value == "") return;
         Searcher.search(options).then((res) => {
             io.emit("search_result", res);
@@ -34,6 +35,7 @@ io.on("connection", (socket) => {
     });
 
     socket.on("add_song", (song) => {
+        console.log("added song");
         socket.broadcast.emit("add_song_python", song);
         socket.broadcast.emit("get_player_info_python");
         socket.broadcast.emit("set_playlist_info_python", {
@@ -59,11 +61,27 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("get_player_info_python");
     });
 
+    socket.on("previous_song", () => {
+        socket.broadcast.emit("previous_song_python");
+        socket.broadcast.emit("get_player_info_python");
+    });
+
     socket.on("change_volume", (volume) => {
         socket.broadcast.emit("change_volume_python", volume);
     });
 
+    socket.on("change_looped", () => {
+        socket.broadcast.emit("change_looped_python");
+        socket.broadcast.emit("get_player_info_python");
+    });
+
+    socket.on("change_shuffle", () => {
+        socket.broadcast.emit("change_shuffle_python");
+        socket.broadcast.emit("get_player_info_python");
+    });
+
     socket.on("sending_player_info", (info) => {
+        // console.log(info);
         socket.broadcast.emit("update_page", info);
     });
     socket.on("song_added", () => {
@@ -72,7 +90,9 @@ io.on("connection", (socket) => {
 
     socket.on("search_playlist", (options) => {
         Searcher.searchPlaylist(options).then((data) => {
-            socket.emit("search_playlist_result", data);
+            if (data) {
+                socket.emit("search_playlist_result", data);
+            }
         });
     });
 
@@ -89,6 +109,10 @@ io.on("connection", (socket) => {
 
     socket.on("get_saved_playlists", () => {
         Save.getPlaylists().then((playlists) => {
+            // console.log(playlists);
+            // for (let key in playlists) {
+            //     console.log(playlists[key].videos[0]);
+            // }
             socket.emit("get_saved_playlists", playlists);
         });
     });
@@ -114,6 +138,7 @@ io.on("connection", (socket) => {
             title: info.title,
             author: info.author,
             color: info.color,
+            listId: info.listId,
         });
     });
 
@@ -129,26 +154,12 @@ io.on("connection", (socket) => {
         Save.saveFavoriteSong(song);
     });
 
-    socket.on("previous_song", () => {
-        socket.broadcast.emit("previous_song_python");
-        socket.broadcast.emit("get_player_info_python");
-    });
-
-    socket.on("change_looped", () => {
-        socket.broadcast.emit("change_looped_python");
-        socket.broadcast.emit("get_player_info_python");
-    });
-
-    socket.on("change_shuffle", () => {
-        socket.broadcast.emit("change_shuffle_python");
-        socket.broadcast.emit("get_player_info_python");
-    });
-
     socket.on("get_player_timeline", () => {
         socket.broadcast.emit("get_player_timeline_python");
     });
 
     socket.on("sending_player_timeline", (info) => {
+        // console.log(info);
         socket.broadcast.emit("sending_player_timeline", info);
     });
 

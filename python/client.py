@@ -68,7 +68,7 @@ def skip_song(volume):
 @sio.on("set_playlist_info_python")
 def set_playlist(info):
     # print(playlist)]
-    player.set_playlist_info(info['title'], info['author'], info['color'])
+    player.set_playlist_info(info['title'], info['author'], info['color'], info['listId'])
 
 
 @sio.on("set_playlist_songs_python")
